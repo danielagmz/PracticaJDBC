@@ -68,3 +68,22 @@ INSERT INTO players (name, surname, position, height, weight, birthdate, nationa
   (5, 4, 110, 105), 
   (1, 3, 95, 90);
   
+  
+  -- funciones necesarias
+  
+  DELIMITER //
+CREATE FUNCTION spMediaPuntos(pId INT) RETURNS FLOAT 
+BEGIN
+	DECLARE vPuntos FLOAT DEFAULT 0;
+    
+    WITH puntos_partidos_jugador AS (
+		SELECT SUM(valor*substring(nom,length(nom)-1)) as puntospp
+			FROM estadistic_partit_jugador epj
+			INNER JOIN estadistics e ON(epj.estadistic_id=e.estadistic_id)
+		WHERE e.estadistic_id IN (3,5,7) AND jugador_id = pId
+	GROUP BY partit_id
+    ) SELECT ROUND(AVG(puntospp),2) INTO vPuntos
+		FROM puntos_partidos_jugador;
+    RETURN vPuntos;
+END 
+// DELIMITER ;

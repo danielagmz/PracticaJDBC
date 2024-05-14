@@ -1,3 +1,5 @@
+package Controlador;
+
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -12,15 +14,7 @@ import org.json.simple.parser.ParseException;
 public class Controlador {
 
     public static void main(final String[] args) throws IOException, ParseException, URISyntaxException {
-//        URL url = new URI("https://stats.nba.com/stats/playerindex?Country=Spain").toURL();
-//        URLConnection urlcon = url.openConnection();
-//        urlcon.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
-//        JSONParser parser=new JSONParser();
-//
-//        Object obj = parser.parse(new InputStreamReader(urlcon.getInputStream()));
-//        JSONObject jsonObject=((JSONObject) obj);
 
-//      mostrarArbre(jsonObject,"¬");
     }
     private static void mostrarArbre(JSONObject jsonObject, String prefix) {
 
