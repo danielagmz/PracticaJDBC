@@ -13,23 +13,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 public class Controlador {
 
-    public static void main(final String[] args) throws IOException, ParseException, URISyntaxException {
+   public static void menu(){
 
-    }
-    private static void mostrarArbre(JSONObject jsonObject, String prefix) {
+   }
 
-        for (Object key : jsonObject.keySet()) {
-            System.out.println(prefix + key);
-            Object value = jsonObject.get(key);
-            if (value instanceof JSONObject) {
-                mostrarArbre((JSONObject) value, prefix + "\t");
-            } else if (value instanceof JSONArray array) {
-                for (Object item : array) {
-                    mostrarArbre((JSONObject) item, prefix + "\t");
-                }
-            } else {
-                System.out.println(prefix + "\t" + value);
-            }
-        }
-    }
 }
