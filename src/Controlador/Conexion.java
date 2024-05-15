@@ -10,7 +10,7 @@ public class Conexion {
         try {
             return DriverManager.getConnection("jdbc:mysql://192.168.56.103:3306/nba","perepi","pastanaga");
         } catch (SQLException e) {
-            Vista.imprimirMensaje(e.getMessage());
+            Vista.imprimirMensaje("Ha habido un problema con la ruta de la conexion");
         }
 
         return null;

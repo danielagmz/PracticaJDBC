@@ -16,7 +16,7 @@ public class DaoMatch implements DAODB<Match>{
         try {
             con = Conexion.connection();
             if (con != null) {
-                smt = con.prepareStatement("insert matches values(?,?,?,?)");
+                smt = con.prepareStatement("INSERT INTO matches(id_visitante,punts_visitant,id_local,punts_local) VALUES(?,?,?,?);");
                 smt.setInt(1, match.getVisitante_id());
                 smt.setInt(2, match.getPuntos_visitante());
                 smt.setInt(3, match.getLocal_id());
@@ -40,6 +40,7 @@ public class DaoMatch implements DAODB<Match>{
 
     @Override
     public ArrayList<Match> read(Match match) {
+
         return null;
     }
 
