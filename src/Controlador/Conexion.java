@@ -1,17 +1,37 @@
 package Controlador;
 
+
+import Vista.Vista;
 import java.sql.*;
 
 public class Conexion {
-    public static void connection(){
+    public static Connection connection(){
 
         try {
-            Connection connection= DriverManager.getConnection("jdbc:mysql://192.168.56.103:3306/nba","perepi","pastanaga");
-            Statement statement= connection.createStatement();
-
-//            ResultSet resultSet= statement.executeQuery("select * from players");
+            return DriverManager.getConnection("jdbc:mysql://192.168.56.103:3306/nba","perepi","pastanaga");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Vista.imprimirMensaje(e.getMessage());
+        }
+
+        return null;
+    }
+    public static void close(Connection con) {
+        if (con != null){
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Vista.imprimirMensaje(e.getMessage());
+            }
         }
     }
+    public static void close(PreparedStatement smt){
+        if (smt != null) {
+            try {
+                smt.close();
+            } catch (SQLException e) {
+                Vista.imprimirMensaje(e.getMessage());
+            }
+        }
+    }
+
 }
