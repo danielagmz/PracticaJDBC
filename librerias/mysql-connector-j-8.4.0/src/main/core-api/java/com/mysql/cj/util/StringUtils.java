@@ -910,7 +910,7 @@ public class StringUtils {
                 }
 
                 if (searchForPos == searchForEnd) {
-                    return searchInPos != searchInEnd ? WILD_COMPARE_CONTINUE_WITH_WILD : WILD_COMPARE_MATCH; /* Match if both are at end */
+                    return searchInPos != searchInEnd ? WILD_COMPARE_CONTINUE_WITH_WILD : WILD_COMPARE_MATCH; /* Model.Model.Match if both are at end */
                 }
 
                 result = WILD_COMPARE_CONTINUE_WITH_WILD; /* Found an anchor char */

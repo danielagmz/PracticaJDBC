@@ -267,7 +267,7 @@ public class MetaDataRegressionTest extends BaseTestCase {
     }
 
     /**
-     * Tests bug reported by OpenOffice team with getColumns and LONGBLOB
+     * Tests bug reported by OpenOffice Model.team with getColumns and LONGBLOB
      *
      * @throws Exception
      */

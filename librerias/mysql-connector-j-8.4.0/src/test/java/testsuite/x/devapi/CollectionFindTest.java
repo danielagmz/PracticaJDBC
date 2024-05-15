@@ -81,7 +81,7 @@ public class CollectionFindTest extends BaseCollectionTestCase {
 
     @Test
     public void testProjection() {
-        // TODO: the "1" is coming back from the server as a string. checking with xplugin team if this is ok
+        // TODO: the "1" is coming back from the server as a string. checking with xplugin Model.team if this is ok
         this.collection.add("{\"_id\":\"the_id\",\"g\":1}").execute();
 
         DocResult docs = this.collection.find().fields("$._id as _id, $.g as g, 1 + 1 as q").execute();
