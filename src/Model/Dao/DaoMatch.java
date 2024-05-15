@@ -2,6 +2,7 @@ package Model.Dao;
 
 import Controlador.Conexion;
 import Model.Match;
+import com.sun.source.tree.IfTree;
 
 
 import java.sql.*;
@@ -51,6 +52,22 @@ public class DaoMatch implements DAODB<Match>{
 
     @Override
     public boolean delete(Match match) {
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("DELETE FROM matches WHERE id=?");
+
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
         return false;
     }
 
