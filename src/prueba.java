@@ -5,13 +5,8 @@ import Vista.Vista;
 
 public class prueba {
     public static void main(final String[] args) {
-        Match m1 = new Match(2,2,2,2);
-        m1.setId(21);
-//        Match m2 = new Match();
-//        m2.setId(21);
-
-//        Match m3=new Match();
-//        m3.setId(21);
+//        Match m1 = new Match(2,2,2,2);
+//        m1.setId(21);
         DaoMatch db=new DaoMatch();
 
 //        if (db.create(m1)){
@@ -27,7 +22,9 @@ public class prueba {
 //        }
         System.out.println("obteniendo...");
 
-        System.out.println(db.update(m1));
+        for (Match m  : db.listarTodos()) {
+            System.out.println(m);
+        }
 
 
 

@@ -1,20 +1,31 @@
 package Controlador;
 
 import Model.Dao.DaoPlayer;
+import Model.Player;
+import Vista.Vista;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
 
 public class Controlador {
     static Scanner scan = new Scanner(System.in);
     public static void ListarJugadores(){
+
         String nom;
         System.out.print("Dime un equipo: ");
         nom = scan.nextLine();
-        if (VerificarId(nom)){
-            DaoPlayer player = new DaoPlayer();
-            player.listarTodos(nom);
-        }
+       Vista.imprimirMensaje ("Buscando...");
+
+//        if (VerificarId(nom)){
+        DaoPlayer player = new DaoPlayer();
+        List<Player> lista =player.listarTodos(nom);
+
+            Vista.imprimirPlayers(lista);
+//        }else{
+//          Vista.imprimirMensaje("el nombre no es correcto")
+//        }
     }
     private static boolean VerificarId(String id){
         return id.matches("(\\\\d+)");

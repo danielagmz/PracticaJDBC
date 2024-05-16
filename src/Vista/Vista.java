@@ -1,8 +1,11 @@
 package Vista;
 
 
+import Model.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.List;
 
 public class Vista {
    public static void imprimirMensaje(String mensaje){
@@ -13,20 +16,16 @@ public class Vista {
        System.out.print(mensaje);
    }
 
-    private static void mostrarArbre(JSONObject jsonObject, String prefix) {
+   public static void imprimirPlayers(List<Player> lista){
+       System.out.printf("%-4s%-10s%-3s%-3s%-3s","id","nom","alçada","pes","equip_actual\n");
+       for (Player player : lista) {
+           System.out.printf("%-4d%10s%3d%3d%3d\n",player.getId(),player.getNom(),player.getAlcada(),player.getPes(),player.getEquip_actual());
+       }
+   }
 
-        for (Object key : jsonObject.keySet()) {
-            System.out.println(prefix + key);
-            Object value = jsonObject.get(key);
-            if (value instanceof JSONObject) {
-                mostrarArbre((JSONObject) value, prefix + "\t");
-            } else if (value instanceof JSONArray array) {
-                for (Object item : array) {
-                    mostrarArbre((JSONObject) item, prefix + "\t");
-                }
-            } else {
-                System.out.println(prefix + "\t" + value);
-            }
-        }
-    }
+   public static <T> void recorrerLista(List<T> lista){
+       for (T element : lista) {
+           System.out.println(element);
+       }
+   }
 }

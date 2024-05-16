@@ -2,6 +2,7 @@ package Model.Dao;
 
 import Controlador.Conexion;
 import Model.Player;
+import Vista.Vista;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -132,18 +133,23 @@ public class DaoPlayer implements DAODB<Player>{
                 smt = con.prepareStatement("SELECT id FROM teams WHERE nom=?");
                 smt.setString(1,nom);
                 ResultSet id_equipo = smt.executeQuery();
-                smt = con.prepareStatement("SELECT * FROM players WHERE equipo_actual=?");
-                smt.setInt(1,id_equipo.getInt("id"));
-                ResultSet jugadors_team = smt.executeQuery();
-                while (jugadors_team.next()){
-                    Player p = new Player();
-                    p.setId(jugadors_team.getInt(1));
-                    p.setNom(jugadors_team.getString(2));
-                    p.setAlcada(jugadors_team.getInt(3));
-                    p.setPes(jugadors_team.getInt(4));
-                    p.setEquip_actual(jugadors_team.getInt(5));
-                    jugadores.add(p);
+                if (id_equipo.next()){
+                    smt = con.prepareStatement("SELECT * FROM players WHERE equipo_actual=?");
+                    smt.setInt(1,id_equipo.getInt("id"));
+                    ResultSet jugadors_team = smt.executeQuery();
+                    while (jugadors_team.next()){
+                        Player p = new Player();
+                        p.setId(jugadors_team.getInt(1));
+                        p.setNom(jugadors_team.getString(2));
+                        p.setAlcada(jugadors_team.getInt(3));
+                        p.setPes(jugadors_team.getInt(4));
+                        p.setEquip_actual(jugadors_team.getInt(5));
+                        jugadores.add(p);
+                    }
+                }else {
+                    Vista.imprimirMensaje("Ha ocurrido un error al buscar los jugadores de ese equipo");
                 }
+
                 return jugadores;
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");

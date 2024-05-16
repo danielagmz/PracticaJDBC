@@ -60,6 +60,6 @@ public class Match {
     @Override
     public String toString() {
         return String.format(
-                "Match (visitante_id=%s, puntos_visitante=%s, local_id=%s, puntos_local=%s)", this.visitante_id, this.puntos_visitante, this.local_id, this.puntos_local);
+                "Match (id=%s,visitante_id=%s, puntos_visitante=%s, local_id=%s, puntos_local=%s)",this.id==0? "-":this.id, this.visitante_id, this.puntos_visitante, this.local_id, this.puntos_local);
     }
 }
