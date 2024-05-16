@@ -1,10 +1,23 @@
 package Controlador;
 
+import Model.Dao.DaoPlayer;
+
 import java.sql.*;
+import java.util.Scanner;
 
 public class Controlador {
-    private static void VerificarId(int id){
-
+    static Scanner scan = new Scanner(System.in);
+    public static void ListarJugadores(){
+        String nom;
+        System.out.print("Dime un equipo: ");
+        nom = scan.nextLine();
+        if (VerificarId(nom)){
+            DaoPlayer player = new DaoPlayer();
+            player.listarTodos(nom);
+        }
+    }
+    private static boolean VerificarId(String id){
+        return id.matches("(\\\\d+)");
     }
     public static boolean ComprobarId(int id,String tabla){
         Connection con = null;

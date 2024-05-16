@@ -9,5 +9,5 @@ public interface DAODB<T> {
     boolean update (T t);
     boolean delete(T t);
 
-    List<T> listarTodos();
+
 }

@@ -55,7 +55,7 @@ public class DaoPlayer implements DAODB<Player>{
                     m.setAlcada(mResult.getInt(3));
                     m.setPes(mResult.getInt(4));
                     m.setEquip_actual(mResult.getInt(5));
-                     return m;
+                    return m;
                 }
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
@@ -121,8 +121,39 @@ public class DaoPlayer implements DAODB<Player>{
         return false;
     }
 
-    @Override
-    public List<Player> listarTodos() {
+
+    public List<Player> listarTodos(String nom) {
+        List<Player> jugadores = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("SELECT id FROM teams WHERE nom=?");
+                smt.setString(1,nom);
+                ResultSet id_equipo = smt.executeQuery();
+                smt = con.prepareStatement("SELECT * FROM players WHERE equipo_actual=?");
+                smt.setInt(1,id_equipo.getInt("id"));
+                ResultSet jugadors_team = smt.executeQuery();
+                while (jugadors_team.next()){
+                    Player p = new Player();
+                    p.setId(jugadors_team.getInt(1));
+                    p.setNom(jugadors_team.getString(2));
+                    p.setAlcada(jugadors_team.getInt(3));
+                    p.setPes(jugadors_team.getInt(4));
+                    p.setEquip_actual(jugadors_team.getInt(5));
+                    jugadores.add(p);
+                }
+                return jugadores;
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
         return null;
     }
 }
