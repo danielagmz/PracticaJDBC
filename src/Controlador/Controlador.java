@@ -18,7 +18,7 @@ public class Controlador {
         Vista.imprimirMensaje ("Buscando...");
         if (VerificarNombre(nom)){
             DaoPlayer player = new DaoPlayer();
-            Vista.recorrerLista(player.listarTodos(nom));
+            Vista.imprimirPlayers(player.listarTodos(nom));
         } else {
             Vista.imprimirMensaje("El nombre no es correcto");
         }

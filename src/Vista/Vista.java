@@ -17,9 +17,15 @@ public class Vista {
    }
 
    public static void imprimirPlayers(List<Player> lista){
-       System.out.printf("%-4s%-10s%-3s%-3s%-3s","id","nom","alçada","pes","equip_actual\n");
+       System.out.printf("%-4s%-20s%-8s%-8s%-15s","id","nom","alçada","pes","equip_actual");
+       System.out.println();
+       for (int i = 0; i < 55; i++) {
+           System.out.print("-");
+       }
+
+       System.out.println();
        for (Player player : lista) {
-           System.out.printf("%-4d%10s%3d%3d%3d\n",player.getId(),player.getNom(),player.getAlcada(),player.getPes(),player.getEquip_actual());
+           System.out.printf("%-4d%-20s%-8d%-8d%-15d\n",player.getId(),player.getNom(),player.getAlcada(),player.getPes(),player.getEquip_actual());
        }
    }
 
