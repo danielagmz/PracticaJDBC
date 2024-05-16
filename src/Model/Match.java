@@ -14,6 +14,9 @@ public class Match {
         this.puntos_local = puntos_local;
     }
 
+    public Match() {
+    }
+
     public int getVisitante_id() {
         return visitante_id;
     }

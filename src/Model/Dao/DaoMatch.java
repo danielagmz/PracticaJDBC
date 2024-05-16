@@ -5,6 +5,7 @@ import Model.Match;
 import Vista.Vista;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,39 @@ public class DaoMatch implements DAODB<Match>{
     }
 
     @Override
-    public ArrayList<Match> read(Match match) {
+    public Match read(Match match) {
+        Connection con = null;
+        PreparedStatement smt = null;
+
+
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("SELECT * FROM matches WHERE id=?");
+                smt.setInt(1,match.getId());
+
+                ResultSet mResult= smt.executeQuery();
+                if(mResult.next()){
+                    Match m= new Match();
+                    m.setId(mResult.getInt(1));
+                    m.setVisitante_id(mResult.getInt(2));
+                    m.setPuntos_visitante(mResult.getInt(3));
+                    m.setLocal_id(mResult.getInt(4));
+                    m.setPuntos_local(mResult.getInt(5));
+
+                    return m;
+                }
+
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            Vista.imprimirMensaje(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+
 
         return null;
     }

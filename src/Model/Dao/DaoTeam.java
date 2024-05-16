@@ -33,7 +33,7 @@ public class DaoTeam implements DAODB<Team> {
     }
 
     @Override
-    public ArrayList<Team> read(Team team) {
+    public Team read(Team team) {
         return null;
     }
 
@@ -51,6 +51,10 @@ public class DaoTeam implements DAODB<Team> {
             if (con != null){
                 smt = con.prepareStatement("DELETE FROM teams WHERE id=?");
                 smt.setInt(1,team.getId());
+                int rows =smt.executeUpdate();
+                if (rows > 0){
+                    return true;
+                }
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }

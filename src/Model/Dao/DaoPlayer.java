@@ -37,7 +37,7 @@ public class DaoPlayer implements DAODB<Player>{
     }
 
     @Override
-    public ArrayList<Player> read(Player player) {
+    public Player read(Player player) {
         return null;
     }
 
@@ -55,6 +55,10 @@ public class DaoPlayer implements DAODB<Player>{
             if (con != null){
                 smt = con.prepareStatement("DELETE FROM players WHERE id=?");
                 smt.setInt(1,player.getId());
+                int rows =smt.executeUpdate();
+                if (rows > 0){
+                    return true;
+                }
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }
