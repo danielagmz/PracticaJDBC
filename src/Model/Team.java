@@ -8,6 +8,10 @@ public class Team {
         this.nombre = nombre;
     }
 
+    public Team() {
+
+    }
+
     public String getNombre() {
         return nombre;
     }

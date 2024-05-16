@@ -80,6 +80,26 @@ public class DaoMatch implements DAODB<Match>{
 
     @Override
     public boolean update(Match match) {
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("UPDATE matches SET id_visitante=?, punts_visitant=?, id_local=?, punts_local=? WHERE id=?");
+                smt.setInt(1,match.getVisitante_id());
+                smt.setInt(2,match.getPuntos_visitante());
+                smt.setInt(3,match.getLocal_id());
+                smt.setInt(4,match.getPuntos_local());
+                smt.setInt(5,match.getId());
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
         return false;
     }
 

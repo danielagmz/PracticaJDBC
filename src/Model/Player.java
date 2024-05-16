@@ -15,6 +15,10 @@ public class Player {
         this.equip_actual = equip_actual;
     }
 
+    public Player() {
+
+    }
+
     public String getNom() {
         return nom;
     }
