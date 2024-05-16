@@ -54,7 +54,7 @@ public class DaoPlayer implements DAODB<Player>{
             con = Conexion.connection();
             if (con != null){
                 smt = con.prepareStatement("DELETE FROM players WHERE id=?");
-
+                smt.setInt(1,player.getId());
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }

@@ -1,6 +1,7 @@
 package Model;
 
 public class Player {
+    private int id;
     private String nom;
     private int alcada;
     private int pes;
@@ -44,6 +45,14 @@ public class Player {
 
     public void setEquip_actual(int equip_actual) {
         this.equip_actual = equip_actual;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
