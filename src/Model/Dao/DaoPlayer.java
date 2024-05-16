@@ -81,6 +81,9 @@ public class DaoPlayer implements DAODB<Player>{
                 smt.setInt(2,player.getAlcada());
                 smt.setInt(3,player.getPes());
                 smt.setInt(4,player.getEquip_actual());
+
+                int rows = smt.executeUpdate();
+                return  rows > 0;
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }

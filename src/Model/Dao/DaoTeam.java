@@ -71,8 +71,12 @@ public class DaoTeam implements DAODB<Team> {
         try {
             con = Conexion.connection();
             if (con != null){
-                smt = con.prepareStatement("UPDATE teams SET nom=?");
+                smt = con.prepareStatement("UPDATE teams SET nom=? WHERE id=?");
                 smt.setString(1,team.getNombre());
+                smt.setInt(2,team.getId());
+
+                int rows = smt.executeUpdate();
+                return  rows > 0;
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }

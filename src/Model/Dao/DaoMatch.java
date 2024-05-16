@@ -91,6 +91,9 @@ public class DaoMatch implements DAODB<Match>{
                 smt.setInt(3,match.getLocal_id());
                 smt.setInt(4,match.getPuntos_local());
                 smt.setInt(5,match.getId());
+
+                int rows = smt.executeUpdate();
+                return  rows > 0;
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }
