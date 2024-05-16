@@ -1,3 +1,4 @@
+import Controlador.Controlador;
 import Model.Dao.DaoMatch;
 import Model.Match;
 import Vista.Vista;
@@ -10,7 +11,7 @@ public class prueba {
 //        m2.setId(21);
 
         Match m3=new Match();
-        m3.setId(20);
+        m3.setId(21);
 
         DaoMatch db=new DaoMatch();
 

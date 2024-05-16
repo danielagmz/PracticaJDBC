@@ -6,23 +6,18 @@ public class Controlador {
     private static void VerificarId(int id){
 
     }
-    private static boolean ComprobarId(int id,String tabla){
+    public static boolean ComprobarId(int id,String tabla){
         Connection con = null;
+        PreparedStatement statement = null;
         try {
             con = Conexion.connection();
             if (con != null){
-                Statement statement = con.createStatement();
+                    statement = con.prepareStatement("SELECT * FROM " + tabla+" WHERE id=?");
+                    statement.setInt(1,id);
+                    ResultSet resultSet = statement.executeQuery();
 
-                    // Create and execute a SELECT SQL statement.
-                    String selectSql = "SELECT * from" + tabla;
-                    ResultSet resultSet = statement.executeQuery(selectSql);
-                    if (resultSet == null){
-                        return false;
-                }
-                    // Print results from select statement
-                    while (resultSet.next()) {
-                        System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-                    }
+                return resultSet.next();
+
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }
@@ -30,10 +25,11 @@ public class Controlador {
             System.out.println(e.getMessage());
         } finally {
             Conexion.close(con);
+            Conexion.close(statement);
         }
 
 
-return false;
+        return false;
     }
 
 }
