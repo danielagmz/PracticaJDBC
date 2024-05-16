@@ -36,7 +36,7 @@ public class Menu {
                     Controlador.ListarJugadores();
                     break;
                 case 2:
-
+                    Controlador.MedianaJugador();
                     break;
                 case 3:
 
