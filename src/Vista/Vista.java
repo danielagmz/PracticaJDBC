@@ -5,12 +5,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class Vista {
-    public static void menu(){
-
-    }
    public static void imprimirMensaje(String mensaje){
        System.out.println(mensaje);
    }
+
+   public static void imprimirMensajeSeguido(String mensaje){
+       System.out.print(mensaje);
+   }
+
     private static void mostrarArbre(JSONObject jsonObject, String prefix) {
 
         for (Object key : jsonObject.keySet()) {

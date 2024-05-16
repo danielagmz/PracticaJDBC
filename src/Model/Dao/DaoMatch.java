@@ -2,10 +2,10 @@ package Model.Dao;
 
 import Controlador.Conexion;
 import Model.Match;
-import com.sun.source.tree.IfTree;
-
-
-import java.sql.*;
+import Vista.Vista;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class DaoMatch implements DAODB<Match>{
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Vista.imprimirMensaje(e.getMessage());
         } finally {
             Conexion.close(con);
             Conexion.close(smt);
@@ -58,12 +58,16 @@ public class DaoMatch implements DAODB<Match>{
             con = Conexion.connection();
             if (con != null){
                 smt = con.prepareStatement("DELETE FROM matches WHERE id=?");
-
+                smt.setInt(1,match.getId());
+                int rows =smt.executeUpdate();
+                if (rows > 0){
+                    return true;
+                }
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");
             }
         } catch (SQLException e){
-            System.out.println(e.getMessage());
+          Vista.imprimirMensaje(e.getMessage());
         } finally {
             Conexion.close(con);
             Conexion.close(smt);

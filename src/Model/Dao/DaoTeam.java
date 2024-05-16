@@ -49,7 +49,7 @@ public class DaoTeam implements DAODB<Team> {
         try {
             con = Conexion.connection();
             if (con != null){
-                smt = con.prepareStatement("DELETE FROM temas WHERE id=?");
+                smt = con.prepareStatement("DELETE FROM teams WHERE id=?");
 
             } else {
                 throw new SQLException("No se ha podido establecer la conexion");

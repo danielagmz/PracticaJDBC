@@ -1,6 +1,7 @@
 package Model;
 
 public class Match {
+    private int id;
     private int visitante_id;
     private int puntos_visitante;
     private  int local_id;
@@ -31,6 +32,14 @@ public class Match {
 
     public int getLocal_id() {
         return local_id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setLocal_id(int local_id) {
