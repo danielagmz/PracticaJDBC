@@ -1,13 +1,13 @@
 package Controlador;
 
 import Model.Dao.DaoPlayer;
-import Model.Player;
 import Vista.Vista;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
 
 public class Controlador {
     static Scanner scan = new Scanner(System.in);
@@ -26,12 +26,12 @@ public class Controlador {
 
     public static void MedianaJugador(){
         String nom;
-        System.out.print("Dime un nombre de un jugador: ");
+        Vista.imprimirMensajeSeguido ("Dime un nombre de un jugador: ");
         nom = scan.nextLine();
         Vista.imprimirMensaje ("Buscando...");
         if (VerificarNombre(nom)){
             DaoPlayer player = new DaoPlayer();
-            Vista.recorrerLista(player.MedianasJugadores(nom));
+            Vista.imprimirPlayerStats(player.MedianasJugadores(nom));
         } else {
             Vista.imprimirMensaje("El nombre no es correcto");
         }

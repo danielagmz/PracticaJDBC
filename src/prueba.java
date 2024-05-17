@@ -1,7 +1,5 @@
-import Controlador.Controlador;
 import Model.Dao.DaoMatch;
 import Model.Match;
-import Vista.Vista;
 
 public class prueba {
     public static void main(final String[] args) {

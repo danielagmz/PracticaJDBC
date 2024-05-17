@@ -139,6 +139,7 @@ public class DaoPlayer implements DAODB<Player>{
                     ResultSet jugadors_media = smt.executeQuery();
                     while (jugadors_media.next()){
                         Players_stats p = new Players_stats();
+                        p.setId_jugador(jugadors_media.getInt(1));
                         p.setAvg_puntos(jugadors_media.getFloat(2));
                         p.setAvg_rebotes(jugadors_media.getFloat(3));
                         p.setAvg_asistencias(jugadors_media.getFloat(4));

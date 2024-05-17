@@ -1,8 +1,5 @@
 package Model.Dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public interface DAODB<T> {
     boolean create (T t);
     T read(T t);
