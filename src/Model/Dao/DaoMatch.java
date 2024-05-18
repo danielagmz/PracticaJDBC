@@ -167,4 +167,31 @@ public class DaoMatch implements DAODB<Match>{
 
         return null;
     }
+
+    public List<String> ResultPartits(String nom){
+        List<String> partidos = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("CALL Partidos(?)");
+                smt.setString(1,nom);
+                ResultSet partido = smt.executeQuery();
+                while (partido.next()){
+                    String col1 = partido.getString(1);
+                    partidos.add(col1);
+                }
+                return partidos;
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+        return null;
+    }
 }
