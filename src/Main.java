@@ -4,6 +4,11 @@ import Vista.Vista;
 public class Main {
     public static void main(final String[] args) {
         Vista.imprimirMensaje("BENVINGUT");
-        Menu.menuPrincipal();
+        try{
+            Menu.menuPrincipal();
+        }catch (Exception e){
+            Vista.imprimirMensaje(e.getMessage());
+        }
+
     }
 }

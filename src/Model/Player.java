@@ -62,6 +62,6 @@ public class Player {
     @Override
     public String toString() {
         return String.format(
-                "Player (nom=%s, alcada=%s, pes=%s, equip_actual=%s)", this.nom, this.alcada, this.pes, this.equip_actual);
+                "nom=%s alcada=%s pes=%s equip_actual=%s", this.nom, this.alcada, this.pes, this.equip_actual);
     }
 }

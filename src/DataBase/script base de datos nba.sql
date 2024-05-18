@@ -53,8 +53,8 @@ VALUES
 (1, 102, 2, 98),
 (3, 115, 4, 110),
 (5, 105, 1, 100),
-(2, 110, 4, 112),
-(3, 120, 5, 118),
+(2, 110, 3, 112),
+(4, 120, 5, 118),
 (6, 95, 7, 103),
 (8, 109, 9, 97),
 (10, 101, 11, 106),
@@ -200,3 +200,19 @@ VALUES
 (39, 9800, 2500, 3100, 'Jazz'),
 (40, 8000, 2300, 3900, 'Grizzlies');
 
+DELIMITER //
+DROP PROCEDURE IF EXISTS Partidos;
+CREATE PROCEDURE Partidos(IN pNom VARCHAR(50))
+BEGIN
+	DECLARE vId_equipo INT;
+
+    SELECT id INTO vId_equipo
+		FROM teams
+	WHERE nom = pNom;
+SELECT CONCAT(te1.nom, ' - ', te2.nom, ': ', ma.punts_visitant, '-', ma.punts_local) AS match_result
+	FROM matches ma
+	INNER JOIN teams te1 ON ma.id_visitante = te1.id
+	INNER JOIN teams te2 ON ma.id_local = te2.id
+WHERE ma.id_visitante = vId_equipo OR ma.id_local = vId_equipo;
+END //
+DELIMITER ;

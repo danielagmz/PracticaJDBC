@@ -1,13 +1,12 @@
 package Model.Dao;
+
 import Controlador.Conexion;
-import Model.Match;
 import Model.Team;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DaoTeam implements DAODB<Team> {
@@ -114,7 +113,7 @@ public class DaoTeam implements DAODB<Team> {
         return false;
     }
 
-    @Override
+
     public List<Team> listarTodos() {
         return null;
     }
