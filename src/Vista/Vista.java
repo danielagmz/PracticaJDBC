@@ -44,4 +44,14 @@ public class Vista {
            System.out.println(element);
        }
    }
+
+   public static void impPartidosJugados(List<String> partidos){
+       System.out.println();
+       imprimirMensajeSeguido("""
+                                Partidos jugados
+                                ----------------
+                                    """);
+       recorrerLista(partidos);
+
+   }
 }

@@ -45,7 +45,7 @@ public class Controlador {
         Vista.imprimirMensaje("Buscando...");
         if (VerificarNombre(nom)){
             DaoMatch equipo = new DaoMatch();
-            Vista.recorrerLista(equipo.ResultPartits(nom));
+            Vista.impPartidosJugados(equipo.ResultPartits(nom));
         } else {
             Vista.imprimirMensaje("El nombre no es correcto");
         }
