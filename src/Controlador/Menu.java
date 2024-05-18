@@ -39,7 +39,7 @@ public class Menu {
                     Controlador.MedianaJugador();
                     break;
                 case 3:
-
+                    Controlador.ResultadosPartidos();
                     break;
                 case 4:
 
