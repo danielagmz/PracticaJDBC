@@ -170,35 +170,52 @@ VALUES
 -- Crear tabla "historic_players"
 CREATE TABLE historic_players (
     id INT,
-    punts INT,
-    rebots INT,
-    assistencies INT,
+    punts DECIMAL(4,2),
+    rebots DECIMAL(4,2),
+    assistencies DECIMAL(4,2),
     ultim_equip VARCHAR(30)
 );
 
 -- Insertar datos en la tabla "historic_players"
 INSERT INTO historic_players (id, punts, rebots, assistencies, ultim_equip)
 VALUES
-(21, 25000, 6000, 8000, 'Cavaliers'),
-(22, 21000, 5000, 3500, 'Thunder'),
-(23, 19000, 4000, 5000, 'Warriors'),
-(24, 14000, 6500, 3000, 'Bucks'),
-(25, 7000, 2000, 2500, 'Mavericks'),
-(26, 18000, 4500, 5200, 'Rockets'),
-(27, 12000, 5000, 2200, 'Pelicans'),
-(28, 15000, 4300, 2800, 'Raptors'),
-(29, 17000, 3000, 4400, 'Trail Blazers'),
-(30, 11000, 5600, 4000, 'Nuggets'),
-(31, 10000, 2900, 3300, 'Celtics'),
-(32, 14000, 3600, 2500, 'Bulls'),
-(33, 12500, 6000, 2200, '76ers'),
-(34, 11000, 2400, 3800, 'Suns'),
-(35, 8900, 1600, 4400, 'Hawks'),
-(36, 8400, 4400, 2200, 'Timberwolves'),
-(37, 11700, 2500, 3300, 'Wizards'),
-(38, 7400, 3000, 1600, 'Pelicans'),
-(39, 9800, 2500, 3100, 'Jazz'),
-(40, 8000, 2300, 3900, 'Grizzlies');
+	(21,138.9,33.4,44.5,'Cavaliers'),
+	(22,116.7,27.8,19.5,'Thunder'),
+	(23,105.5,22.3,27.8,'Warriors'),
+	(24,77.8,36.1,16.7,'Bucks'),
+	(25,38.8,11.1,13.9,'Mavericks'),
+	(26,100.0,25.0,28.9,'Rockets'),
+	(27,66.6,27.7,12.2,'Pelicans'),
+	(28,83.3,23.8,15.5,'Raptors'),
+	(29,94.4,16.7,24.4,'Trail Blazers'),
+	(30,61.1,31.1,22.2,'Nuggets'),
+	(31,55.6,16.1,18.3,'Celtics'),
+	(32,77.8,20.0,13.9,'Bulls'),
+	(33,69.4,33.3,12.2,'76ers'),
+	(34,61.1,13.3,21.1,'Suns'),
+	(35,49.4,8.9,24.4,'Hawks'),
+	(36,46.7,24.4,12.2,'Timberwolves'),
+	(37,65.0,13.9,18.3,'Wizards'),
+	(38,41.1,16.7,8.9,'Pelicans'),
+	(39,54.4,13.9,17.2,'Jazz'),
+	(40,44.4,12.8,21.7,'Grizzlies');
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS Partidos;
+CREATE PROCEDURE Partidos(IN pNom VARCHAR(50)) 
+BEGIN
+	DECLARE vId_equipo INT;
+    
+    SELECT id INTO vId_equipo
+		FROM teams 
+	WHERE nom = pNom;
+SELECT CONCAT(te1.nom, ' - ', te2.nom, ': ', ma.punts_visitant, '-', ma.punts_local) AS match_result
+	FROM matches ma
+	INNER JOIN teams te1 ON ma.id_visitante = te1.id
+	INNER JOIN teams te2 ON ma.id_local = te2.id
+WHERE ma.id_visitante = vId_equipo OR ma.id_local = vId_equipo;
+END //
+DELIMITER ;
 
 DELIMITER //
 DROP PROCEDURE IF EXISTS Partidos;
