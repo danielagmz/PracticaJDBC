@@ -3,12 +3,13 @@ package Controlador;
 import Vista.Vista;
 import megaLibreria.utilities;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 
 public class Menu {
     static Scanner scan = new Scanner(System.in);
-    public static void menuPrincipal(){
+    public static void menuPrincipal() throws SQLException {
         int opcio;
 
         do {
@@ -45,7 +46,7 @@ public class Menu {
 
                     break;
                 case 5:
-
+                    Controlador.traspas(false);
                     break;
                 case 6:
 
@@ -68,5 +69,15 @@ public class Menu {
         } while (true);
 
 
+    }
+    public static int confirmMenu(String texto,String[] opciones){
+        int opcio;
+
+            utilities.menu(texto, opciones);
+            Vista.imprimirMensajeSeguido("> ");
+            opcio = utilities.introducirNumeroEntero(scan, opciones.length,0,false);
+
+
+        return opcio;
     }
 }

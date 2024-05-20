@@ -1,5 +1,7 @@
 package Model;
 
+import java.sql.SQLException;
+
 public class Player {
     private int id;
     private String nom;
@@ -61,7 +63,16 @@ public class Player {
 
     @Override
     public String toString() {
-        return String.format(
-                "nom=%s alcada=%s pes=%s equip_actual=%s", this.nom, this.alcada, this.pes, this.equip_actual);
+        try {
+            return String.format(
+                    """
+                            %s
+                            -------------
+                            alçada: %s cm
+                            pes: %s kg
+                            equipo: %s""".formatted(this.nom, this.alcada, this.pes, Model.obtenerNombreEquipo(this.equip_actual) ) );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
