@@ -143,6 +143,7 @@ public class Controlador {
 
     public static void traspas(boolean traspas_equip) throws SQLException {
         String nom;
+        String equipN;
         Player player = new Player();
         int equipo_nuevo;
         DaoPlayer db = new DaoPlayer();
@@ -170,8 +171,10 @@ public class Controlador {
                 case 1:
                     Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
                     // todo verificar el nombre
-                    equipo_nuevo=Model.obtenerIdEquipo(scan.nextLine());
-                    Vista.imprimirMensaje("traspasando...");
+                    equipN=scan.nextLine();
+                    Vista.imprimirMensaje("Buscando equipo...");
+                    equipo_nuevo= Model.obtenerIdEquipo(equipN);
+                    Vista.imprimirMensaje("traspasando jugador ...");
                     player.setEquip_actual(equipo_nuevo);
                     if(db.update(player)){
                         Vista.imprimirMensaje("Traspasado correctamente");

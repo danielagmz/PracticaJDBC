@@ -170,7 +170,7 @@ VALUES
 -- Crear tabla "historic_players"
 CREATE TABLE historic_players (
     id INT,
-    punts DECIMAL(4,2),
+    punts DECIMAL(5,2),
     rebots DECIMAL(4,2),
     assistencies DECIMAL(4,2),
     ultim_equip VARCHAR(30)
@@ -200,25 +200,8 @@ VALUES
 	(39,54.4,13.9,17.2,'Jazz'),
 	(40,44.4,12.8,21.7,'Grizzlies');
 
-DELIMITER //
 DROP PROCEDURE IF EXISTS Partidos;
-CREATE PROCEDURE Partidos(IN pNom VARCHAR(50)) 
-BEGIN
-	DECLARE vId_equipo INT;
-    
-    SELECT id INTO vId_equipo
-		FROM teams 
-	WHERE nom = pNom;
-SELECT CONCAT(te1.nom, ' - ', te2.nom, ': ', ma.punts_visitant, '-', ma.punts_local) AS match_result
-	FROM matches ma
-	INNER JOIN teams te1 ON ma.id_visitante = te1.id
-	INNER JOIN teams te2 ON ma.id_local = te2.id
-WHERE ma.id_visitante = vId_equipo OR ma.id_local = vId_equipo;
-END //
-DELIMITER ;
-
 DELIMITER //
-DROP PROCEDURE IF EXISTS Partidos;
 CREATE PROCEDURE Partidos(IN pNom VARCHAR(50))
 BEGIN
 	DECLARE vId_equipo INT;

@@ -81,7 +81,7 @@ public class DaoPlayer implements DAODB<Player>{
             if (con != null){
                 //TODO EL WHEREEEEEEE
                 
-                smt = con.prepareStatement("UPDATE players SET nom=?, alcada=?, pes=?, equipo_actual=?, Where id=?");
+                smt = con.prepareStatement("UPDATE players SET nom=?, alcada=?, pes=?, equipo_actual=? Where id=?");
                 smt.setString(1, player.getNom());
                 smt.setInt(2,player.getAlcada());
                 smt.setInt(3,player.getPes());
