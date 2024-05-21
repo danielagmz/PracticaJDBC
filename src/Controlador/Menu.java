@@ -43,7 +43,7 @@ public class Menu {
                     Controlador.ResultadosPartidos();
                     break;
                 case 4:
-
+                    Controlador.InsertarJugador();
                     break;
                 case 5:
                     Controlador.traspas(false);

@@ -53,8 +53,12 @@ public class Controlador {
             Vista.imprimirMensaje("El nombre no es correcto");
         }
     }
-    private static boolean VerificarId(String id){
-        return id.matches("(\\\\d+)");
+    private static boolean Verificar(String nom){
+        do{
+            nom = scan.nextLine();
+        }while (!nom.matches("^[a-zA-Z]+([-' ][a-zA-Z]+)*$"));
+
+        return false;
     }
     private static boolean VerificarNombre(String nom){
         return nom.matches("^[a-zA-Z]+([-' ][a-zA-Z]+)*$");
@@ -82,9 +86,11 @@ public class Controlador {
         }
         return false;
     }
-// todo borrar la rama desastre y recordar a chris hacer pul del main
+// todo borrar la rama desastre y recordar a chris hacer pull del main
+    // todo refactor para verificaciones
     public static void InsertarJugador() throws SQLException {
         String nom;
+        boolean correcto=true;
         DaoPlayer db=new DaoPlayer();
         Player nPlayer=new Player();
         int id_equipActual;
@@ -98,6 +104,7 @@ public class Controlador {
 //  se agrega al objeto player el nombre. Si no (la select no da -1), este jugador ya existe y se llama a traspasar
         try {
             if (VerificarNombre(nom)){
+                Vista.imprimirMensaje("Comprobando nombre...");
                 if (Model.obtenerIdJugador(nom)==-1){
                     nPlayer.setNom(nom);
 
@@ -106,10 +113,10 @@ public class Controlador {
 
                     System.out.print("Peso del jugador: ");
                     nPlayer.setPes(utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,1,false));
-
-                    System.out.println("Equipo del jugador: ");
+                    scan.nextLine();
+                    System.out.print("Equipo del jugador: ");
                     equip_actual = scan.nextLine();
-
+                    Vista.imprimirMensaje("Comprobando equipo...");
                     if (VerificarNombre(equip_actual)){
                         id_equipActual= Model.obtenerIdEquipo(equip_actual);
                         if (id_equipActual==-1){
@@ -117,17 +124,31 @@ public class Controlador {
                         }else{
                             nPlayer.setEquip_actual(id_equipActual);
                         }
+                        if (db.create(nPlayer)) {
+                            Vista.imprimirMensaje("El jugador ha sido creado y asignado al equipo");
+                        } else {
+                            Vista.imprimirMensaje("Ha habido un error creando al jugador");
+                        }
+                    }else{
+                        throw new IllegalArgumentException("El equipo no es correcto");
                     }
-                    if (db.create(nPlayer)) {
-                        Vista.imprimirMensaje("El jugador ha sido creado y asignado al equipo");
-                    } else {
-                        Vista.imprimirMensaje("Ha habido un error creando al jugador");
-                    }
+
                 } else{
                     Vista.imprimirMensaje("Este jugador ya existe en la base de datos");
-                    Menu.confirmMenu("desea traspasarlo?",opt);
-                    traspas(true);
+
+                    // todo switch de las opciones, case 1 (si), case 2 (no), case 3 (salir al menu principal)
+                    switch ( Menu.confirmMenu("desea traspasarlo?",opt)){
+                        case 1:
+                            traspas(true);
                     // todo si se ejecuta traspaso le pedia nuevamente el nombre, lo he solucionado con un "confirme el nombre"
+                        break;
+                        case 2:
+                            InsertarJugador();
+                        break;
+                        case 3:
+                            Menu.menuPrincipal();
+                        break;
+                    }
                 }
             } else {
                 //todo aqui tendria que volverlo a preguntar
@@ -135,7 +156,7 @@ public class Controlador {
             }
             // todo arreglar y que pidan las cosas varias veces el nombre o el equipo, probablemente funcion
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+           
         }
 
     }

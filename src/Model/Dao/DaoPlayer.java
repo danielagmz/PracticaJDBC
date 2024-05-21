@@ -21,7 +21,7 @@ public class DaoPlayer implements DAODB<Player>{
         try {
             con = Conexion.connection();
             if (con != null) {
-                smt = con.prepareStatement("INSERT INTO players(nom,alcada,pes,equip_actual) VALUES(?,?,?,?)");
+                smt = con.prepareStatement("INSERT INTO players(nom,alcada,pes,equipo_actual) VALUES(?,?,?,?)");
                 smt.setString(1,player.getNom());
                 smt.setInt(2,player.getAlcada());
                 smt.setInt(3,player.getPes());
@@ -79,7 +79,6 @@ public class DaoPlayer implements DAODB<Player>{
         try {
             con = Conexion.connection();
             if (con != null){
-                //TODO EL WHEREEEEEEE
                 
                 smt = con.prepareStatement("UPDATE players SET nom=?, alcada=?, pes=?, equipo_actual=? Where id=?");
                 smt.setString(1, player.getNom());

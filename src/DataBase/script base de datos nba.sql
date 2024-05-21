@@ -200,6 +200,16 @@ VALUES
 	(39,54.4,13.9,17.2,'Jazz'),
 	(40,44.4,12.8,21.7,'Grizzlies');
 
+-------------------- Constraints --------------------------------
+    
+    
+    ALTER TABLE players
+		ADD CONSTRAINT fk_players_teams FOREIGN KEY (equipo_actual)
+		REFERENCES teams (id);
+        
+        
+------------------ Procedures -----------------------------------
+
 DROP PROCEDURE IF EXISTS Partidos;
 DELIMITER //
 CREATE PROCEDURE Partidos(IN pNom VARCHAR(50))
