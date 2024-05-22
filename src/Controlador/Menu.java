@@ -55,7 +55,7 @@ public class Menu {
 
                      break;
                 case 8:
-
+                    Controlador.retirarJugador();
                     break;
                 case 9:
 

@@ -1,12 +1,15 @@
 package Controlador;
 
+import Model.Dao.DaoHistoricPlayers;
 import Model.Dao.DaoMatch;
 import Model.Dao.DaoPlayer;
+import Model.Dao.DaoPlayerStats;
 import Model.Model;
 import Model.Player;
 import Vista.Vista;
 import megaLibreria.utilities;
-
+import Model.HistoricPlayers;
+import Model.Players_stats;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -217,6 +220,43 @@ public class Controlador {
         }
     }
 
+    public static void retirarJugador() throws SQLException {
+        String nom;
+        HistoricPlayers retirado;
+        String nom_equip;
+        Player playerRet=new Player();
+        DaoPlayer dbp = new DaoPlayer();
 
+        Players_stats ps=new Players_stats();
+        DaoPlayerStats dbs= new DaoPlayerStats();
+
+        DaoHistoricPlayers db=new DaoHistoricPlayers();
+
+
+        Vista.imprimirMensajeSeguido("Introduce el jugador que quieres retirar: ");
+        nom=scan.nextLine().trim();
+
+        if (VerificarNombre(nom)){
+            Vista.imprimirMensaje("Guardando datos...");
+            //todo a partir del id, leer y guardar un objeto de player y un objeto de stats
+            playerRet.setId(Model.obtenerIdJugador(nom));
+            playerRet=dbp.read(playerRet);
+            ps.setId_jugador(Model.obtenerIdJugador(nom));
+            ps=dbs.read(ps);
+            Vista.imprimirMensaje("Retirando jugador...");
+            //todo acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
+            nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
+            retirado=new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(),ps.getAvg_asistencias(),nom_equip);
+
+           if (db.create(retirado)){
+               dbs.delete(ps);
+               dbp.delete(playerRet);
+               Vista.imprimirMensaje("Jugador retirado con exito!");
+           }
+
+
+        }
+
+    }
 
 }
