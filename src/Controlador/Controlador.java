@@ -237,22 +237,28 @@ public class Controlador {
         nom=scan.nextLine().trim();
 
         if (VerificarNombre(nom)){
-            Vista.imprimirMensaje("Guardando datos...");
+            Vista.imprimirMensaje("Recuperando datos...");
             //todo a partir del id, leer y guardar un objeto de player y un objeto de stats
             playerRet.setId(Model.obtenerIdJugador(nom));
-            playerRet=dbp.read(playerRet);
             ps.setId_jugador(Model.obtenerIdJugador(nom));
+            playerRet=dbp.read(playerRet);
             ps=dbs.read(ps);
-            Vista.imprimirMensaje("Retirando jugador...");
-            //todo acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
-            nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
-            retirado=new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(),ps.getAvg_asistencias(),nom_equip);
+            if (ps != null && playerRet!=null){
+                Vista.imprimirMensaje("Retirando jugador...");
+                //todo acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
+                nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
+                retirado=new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(),ps.getAvg_asistencias(),nom_equip);
 
-           if (db.create(retirado)){
-               dbs.delete(ps);
-               dbp.delete(playerRet);
-               Vista.imprimirMensaje("Jugador retirado con exito!");
-           }
+                if (db.create(retirado)){
+                    dbs.delete(ps);
+                    dbp.delete(playerRet);
+                    Vista.imprimirMensaje("Jugador retirado con exito!");
+                }
+            }else{
+                Vista.imprimirMensaje("No se ha encontrado el jugador");
+                Menu.menuPrincipal();
+            }
+
 
 
         }
