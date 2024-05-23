@@ -271,12 +271,14 @@ public class Controlador {
             if (!VerificarNombre(nombre)){
                 Vista.imprimirMensaje("El nombre no es correcto");
             }
+        } while (!VerificarNombre(nombre));
+        do {
             Vista.imprimirMensajeSeguido("Escribe la franquicia: ");
             franquicia = scan.nextLine();
             if (!VerificarNombre(nombre)){
                 Vista.imprimirMensaje("La franquicia introducida no es correcto");
             }
-        } while (!VerificarNombre(nombre) && !VerificarNombre(franquicia));
+        } while (!VerificarNombre(franquicia));
         CambiarFranquicia(nombre,franquicia);
     }
 
