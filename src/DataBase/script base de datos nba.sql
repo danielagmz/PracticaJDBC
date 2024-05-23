@@ -75,30 +75,32 @@ VALUES
 CREATE TABLE teams (
     id INT AUTO_INCREMENT,
     nom VARCHAR(50),
+    franquicia VARCHAR(50),
+    nom_complet VARCHAR(100) AS (concat(franquicia," ",nom)),
     CONSTRAINT pk_teams_id PRIMARY KEY (id)
 );
 
 -- Insertar datos en la tabla "teams"
-INSERT INTO teams (nom)
+INSERT INTO teams (nom,franquicia)
 VALUES 
-('Lakers'),
-('Nets'),
-('Warriors'),
-('Bucks'),
-('Mavericks'),
-('76ers'),
-('Clippers'),
-('Blazers'),
-('Nuggets'),
-('Celtics'),
-('Heat'),
-('Suns'),
-('Hawks'),
-('Timberwolves'),
-('Wizards'),
-('Pelicans'),
-('Cavaliers'),
-('Grizzlies');
+('Lakers','Los Angeles'),
+('Nets','Brooklyn'),
+('Warriors','San Francisco'),
+('Bucks','Milwaukee'),
+('Mavericks','Dallas'),
+('76ers','Philadelphia'),
+('Clippers','Los Angeles'),
+('Blazers','Portland'),
+('Nuggets','Denver'),
+('Celtics','Boston'),
+('Heat','Miami'),
+('Suns','Phoenix'),
+('Hawks','Atlanta Hawks'),
+('Timberwolves','Minneapolis'),
+('Wizards','Washington'),
+('Pelicans','New Orleans'),
+('Cavaliers','Cleveland'),
+('Grizzlies','Memphis');
 
 -- Crear tabla "players_matches"
 CREATE TABLE players_matches (
@@ -107,33 +109,113 @@ CREATE TABLE players_matches (
     punts INT,
     rebots INT,
     assistencies INT,
-    CONSTRAINT fk_players_matches_matches FOREIGN KEY (id_match) REFERENCES matches(id),
-    CONSTRAINT fk_players_matches_players FOREIGN KEY (id_jugador) REFERENCES players(id)
+    CONSTRAINT fk_players_matches_matches FOREIGN KEY (id_match) REFERENCES matches(id)
+
 );
 
 -- Insertar datos en la tabla "players_matches"
 INSERT INTO players_matches (id_match, id_jugador, punts, rebots, assistencies)
 VALUES
-(1, 1, 30, 8, 10),
-(2, 1, 25, 10, 7),
-(3, 2, 35, 5, 4),
-(4, 2, 40, 7, 6),
-(5, 3, 28, 3, 9),
-(6, 3, 32, 4, 11),
-(7, 4, 22, 12, 5),
-(8, 4, 18, 15, 7),
-(9, 5, 20, 6, 8),
-(10, 5, 25, 8, 9),
-(11, 6, 27, 5, 10),
-(12, 6, 31, 6, 8),
-(13, 7, 24, 10, 6),
-(14, 7, 30, 12, 7),
-(15, 8, 26, 7, 5),
-(16, 8, 21, 8, 4),
-(17, 9, 29, 4, 10),
-(18, 9, 35, 5, 7),
-(19, 10, 23, 11, 9),
-(20, 10, 20, 12, 8);
+(1, 3, 28, 10, 9),
+(1, 16, 15, 11, 1),
+(1, 12, 21, 6, 6),
+(1, 19, 24, 3, 7),
+(1, 10, 26, 2, 9),
+(1, 7, 30, 11, 3),
+(1, 4, 14, 13, 5),
+(1, 9, 35, 5, 2),
+(1, 2, 12, 7, 4),
+(1, 18, 22, 4, 7),
+(2, 11, 8, 8, 10),
+(2, 30, 27, 9, 3),
+(2, 28, 10, 2, 8),
+(2, 23, 18, 1, 5),
+(2, 15, 20, 6, 7),
+(2, 27, 32, 4, 2),
+(2, 25, 17, 10, 9),
+(2, 20, 6, 15, 4),
+(2, 13, 5, 11, 1),
+(2, 22, 14, 7, 3),
+(3, 6, 35, 10, 8),
+(3, 5, 7, 3, 5),
+(3, 17, 22, 12, 4),
+(3, 26, 24, 9, 3),
+(3, 14, 18, 14, 9),
+(3, 21, 21, 1, 7),
+(3, 1, 9, 5, 2),
+(3, 8, 28, 8, 6),
+(3, 29, 10, 15, 5),
+(3, 24, 30, 6, 7),
+(4, 15, 16, 11, 5),
+(4, 25, 14, 7, 3),
+(4, 19, 27, 9, 8),
+(4, 2, 8, 4, 1),
+(4, 26, 10, 8, 6),
+(4, 13, 29, 10, 9),
+(4, 28, 6, 12, 4),
+(4, 5, 15, 5, 2),
+(4, 3, 20, 3, 7),
+(4, 30, 12, 9, 3),
+(5, 8, 18, 4, 1),
+(5, 20, 32, 6, 9),
+(5, 14, 11, 7, 5),
+(5, 12, 9, 5, 3),
+(5, 7, 26, 14, 8),
+(5, 16, 5, 9, 6),
+(5, 23, 10, 12, 4),
+(5, 18, 28, 3, 7),
+(5, 11, 22, 8, 2),
+(5, 4, 25, 2, 5),
+(6, 21, 30, 9, 3),
+(6, 10, 27, 6, 8),
+(6, 22, 19, 4, 1),
+(6, 6, 18, 12, 7),
+(6, 29, 15, 7, 5),
+(6, 1, 8, 5, 9),
+(6, 9, 12, 11, 6),
+(6, 17, 28, 8, 2),
+(6, 19, 20, 14, 4),
+(6, 27, 14, 3, 7),
+(7, 3, 16, 9, 5),
+(7, 13, 6, 5, 9),
+(7, 24, 12, 8, 4),
+(7, 26, 9, 3, 7),
+(7, 11, 14, 11, 2),
+(7, 8, 22, 6, 1),
+(7, 18, 27, 4, 8),
+(7, 30, 20, 7, 6),
+(7, 5, 25, 12, 3),
+(7, 7, 18, 10, 7),
+(8, 28, 19, 5, 4),
+(8, 23, 30, 6, 8),
+(8, 2, 14, 9, 5),
+(8, 16, 32, 8, 1),
+(8, 15, 10, 2, 7),
+(8, 1, 12, 12, 3),
+(8, 10, 6, 11, 9),
+(8, 20, 21, 10, 6),
+(8, 21, 17, 7, 4),
+(8, 29, 8, 4, 2),
+(9, 19, 18, 6, 9),
+(9, 9, 26, 7, 3),
+(9, 12, 5, 11, 1),
+(9, 13, 22, 3, 8),
+(9, 3, 10, 8, 5),
+(9, 25, 15, 5, 7),
+(9, 17, 20, 4, 2),
+(9, 27, 32, 2, 6),
+(9, 26, 9, 12, 4),
+(9, 6, 14, 10, 7),
+(10, 30, 21, 1, 5),
+(10, 5, 6, 3, 7),
+(10, 8, 19, 4, 9),
+(10, 11, 28, 8, 6),
+(10, 24, 12, 9, 3),
+(10, 18, 17, 10, 4),
+(10, 22, 27, 11, 2),
+(10, 20, 14, 6, 8),
+(10, 14, 8, 5, 7),
+(10, 4, 10, 7, 1);
 
 -- Crear tabla "player_stats"
 CREATE TABLE player_stats (
@@ -170,38 +252,48 @@ VALUES
 -- Crear tabla "historic_players"
 CREATE TABLE historic_players (
     id INT,
-    punts INT,
-    rebots INT,
-    assistencies INT,
+    punts DECIMAL(5,2),
+    rebots DECIMAL(4,2),
+    assistencies DECIMAL(4,2),
     ultim_equip VARCHAR(30)
 );
 
 -- Insertar datos en la tabla "historic_players"
 INSERT INTO historic_players (id, punts, rebots, assistencies, ultim_equip)
 VALUES
-(21, 25000, 6000, 8000, 'Cavaliers'),
-(22, 21000, 5000, 3500, 'Thunder'),
-(23, 19000, 4000, 5000, 'Warriors'),
-(24, 14000, 6500, 3000, 'Bucks'),
-(25, 7000, 2000, 2500, 'Mavericks'),
-(26, 18000, 4500, 5200, 'Rockets'),
-(27, 12000, 5000, 2200, 'Pelicans'),
-(28, 15000, 4300, 2800, 'Raptors'),
-(29, 17000, 3000, 4400, 'Trail Blazers'),
-(30, 11000, 5600, 4000, 'Nuggets'),
-(31, 10000, 2900, 3300, 'Celtics'),
-(32, 14000, 3600, 2500, 'Bulls'),
-(33, 12500, 6000, 2200, '76ers'),
-(34, 11000, 2400, 3800, 'Suns'),
-(35, 8900, 1600, 4400, 'Hawks'),
-(36, 8400, 4400, 2200, 'Timberwolves'),
-(37, 11700, 2500, 3300, 'Wizards'),
-(38, 7400, 3000, 1600, 'Pelicans'),
-(39, 9800, 2500, 3100, 'Jazz'),
-(40, 8000, 2300, 3900, 'Grizzlies');
+	(21,138.9,33.4,44.5,'Cavaliers'),
+	(22,116.7,27.8,19.5,'Thunder'),
+	(23,105.5,22.3,27.8,'Warriors'),
+	(24,77.8,36.1,16.7,'Bucks'),
+	(25,38.8,11.1,13.9,'Mavericks'),
+	(26,100.0,25.0,28.9,'Rockets'),
+	(27,66.6,27.7,12.2,'Pelicans'),
+	(28,83.3,23.8,15.5,'Raptors'),
+	(29,94.4,16.7,24.4,'Trail Blazers'),
+	(30,61.1,31.1,22.2,'Nuggets'),
+	(31,55.6,16.1,18.3,'Celtics'),
+	(32,77.8,20.0,13.9,'Bulls'),
+	(33,69.4,33.3,12.2,'76ers'),
+	(34,61.1,13.3,21.1,'Suns'),
+	(35,49.4,8.9,24.4,'Hawks'),
+	(36,46.7,24.4,12.2,'Timberwolves'),
+	(37,65.0,13.9,18.3,'Wizards'),
+	(38,41.1,16.7,8.9,'Pelicans'),
+	(39,54.4,13.9,17.2,'Jazz'),
+	(40,44.4,12.8,21.7,'Grizzlies');
 
-DELIMITER //
+-------------------- Constraints --------------------------------
+    
+    
+    ALTER TABLE players
+		ADD CONSTRAINT fk_players_teams FOREIGN KEY (equipo_actual)
+    REFERENCES teams (id);
+        
+        
+------------------ Procedures -----------------------------------
+
 DROP PROCEDURE IF EXISTS Partidos;
+DELIMITER //
 CREATE PROCEDURE Partidos(IN pNom VARCHAR(50))
 BEGIN
 	DECLARE vId_equipo INT;

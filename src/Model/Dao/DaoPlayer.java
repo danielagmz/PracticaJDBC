@@ -21,7 +21,7 @@ public class DaoPlayer implements DAODB<Player>{
         try {
             con = Conexion.connection();
             if (con != null) {
-                smt = con.prepareStatement("INSERT INTO players(nom,alcada,pes,equip_actual) VALUES(?,?,?,?)");
+                smt = con.prepareStatement("INSERT INTO players(nom,alcada,pes,equipo_actual) VALUES(?,?,?,?)");
                 smt.setString(1,player.getNom());
                 smt.setInt(2,player.getAlcada());
                 smt.setInt(3,player.getPes());
@@ -79,11 +79,13 @@ public class DaoPlayer implements DAODB<Player>{
         try {
             con = Conexion.connection();
             if (con != null){
-                smt = con.prepareStatement("UPDATE players SET nom=?, alcada=?, pes=?, equip_actual=?");
+                
+                smt = con.prepareStatement("UPDATE players SET nom=?, alcada=?, pes=?, equipo_actual=? Where id=?");
                 smt.setString(1, player.getNom());
                 smt.setInt(2,player.getAlcada());
                 smt.setInt(3,player.getPes());
                 smt.setInt(4,player.getEquip_actual());
+                smt.setInt(5,player.getId());
 
                 int rows = smt.executeUpdate();
                 return  rows > 0;
@@ -126,6 +128,7 @@ public class DaoPlayer implements DAODB<Player>{
 
 
     public List<Players_stats> MedianasJugadores(String nom){
+        //todo esto deberia de imprimir un solo player no una lista
         List<Players_stats> jugadores = new ArrayList<>();
         Connection con = null;
         PreparedStatement smt = null;
@@ -187,7 +190,7 @@ public class DaoPlayer implements DAODB<Player>{
                         jugadores.add(p);
                     }
                 } else {
-                    Vista.imprimirMensaje("Ha ocurrido un error al buscar los jugadores de ese equipo");
+                   throw new SQLException ("Ha ocurrido un error al buscar los jugadores de ese equipo");
                 }
                 return jugadores;
             } else {

@@ -3,12 +3,13 @@ package Controlador;
 import Vista.Vista;
 import megaLibreria.utilities;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 
 public class Menu {
     static Scanner scan = new Scanner(System.in);
-    public static void menuPrincipal(){
+    public static void menuPrincipal() throws SQLException {
         int opcio;
 
         do {
@@ -42,10 +43,10 @@ public class Menu {
                     Controlador.ResultadosPartidos();
                     break;
                 case 4:
-
+                    Controlador.InsertarJugador();
                     break;
                 case 5:
-
+                    Controlador.traspas(false);
                     break;
                 case 6:
 
@@ -54,10 +55,10 @@ public class Menu {
 
                      break;
                 case 8:
-
+                    Controlador.retirarJugador();
                     break;
                 case 9:
-
+                    Controlador.IntroducirFranquicia();
                     break;
                 case 0:
                     System.exit(1);
@@ -69,4 +70,16 @@ public class Menu {
 
 
     }
+    public static int confirmMenu(String texto,String[] opciones){
+        int opcio;
+
+            utilities.menu(texto, opciones);
+            Vista.imprimirMensajeSeguido("> ");
+            opcio = utilities.introducirNumeroEntero(scan, opciones.length,0,false);
+
+
+        return opcio;
+    }
+
+
 }
