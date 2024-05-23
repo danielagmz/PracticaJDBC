@@ -259,10 +259,60 @@ public class Controlador {
                 Menu.menuPrincipal();
             }
 
-
-
         }
 
+    }
+
+    public static void IntroducirFranquicia(){
+        String nombre,franquicia;
+        do {
+            Vista.imprimirMensajeSeguido("Que franquicia quieres cambiar(Ej: Los Angeles Lakers): ");
+            nombre = scan.nextLine();
+            if (!VerificarNombre(nombre)){
+                Vista.imprimirMensaje("El nombre no es correcto");
+            }
+            Vista.imprimirMensajeSeguido("Escribe la franquicia: ");
+            franquicia = scan.nextLine();
+            if (!VerificarNombre(nombre)){
+                Vista.imprimirMensaje("La franquicia introducida no es correcto");
+            }
+        } while (!VerificarNombre(nombre) && !VerificarNombre(franquicia));
+        CambiarFranquicia(nombre,franquicia);
+    }
+
+    public static void CambiarFranquicia(String nombre, String franquicia){
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            Vista.imprimirMensaje("Comprobando...");
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("SELECT id FROM teams WHERE nom_complet=?");
+                smt.setString(1,nombre);
+                ResultSet id_team = smt.executeQuery();
+                if (id_team != null){
+                    if (id_team.next()){
+                        smt = con.prepareStatement("UPDATE teams SET franquicia=? WHERE id=?");
+                        smt.setString(1,franquicia);
+                        smt.setInt(2,id_team.getInt(1));
+                        smt.executeUpdate();
+                        Vista.imprimirMensaje("El cambio de Franquicia se ha realizado con exito");
+                    } else {
+                        Vista.imprimirMensaje("Ha ocurrido un error al buscar las medianas del jugador");
+                    }
+                } else {
+                    Controlador.InsertarJugador();
+                    Vista.imprimirMensaje("Creando Jugador...");
+                }
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
     }
 
 }
