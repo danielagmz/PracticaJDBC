@@ -14,8 +14,7 @@ CREATE TABLE players (
 );
 
 -- Insertar datos en la tabla "players"
-INSERT INTO players (nom, alcada, pes, equipo_actual) 
-VALUES ('LeBron James', 200, 90, 1),
+INSERT INTO players (nom, alcada, pes, equipo_actual)
 ('Kevin Durant', 201, 91, 1),
 ('Stephen Curry', 202, 92, 1),
 ('Giannis Antetokounmpo', 203, 93, 1),
