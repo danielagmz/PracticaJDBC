@@ -93,35 +93,4 @@ public class Model {
         return nombre;
     }
 
-    public static Players_stats obtenerPlayerStats(int id){
-        Connection con = null;
-        PreparedStatement smt = null;
-        try {
-            con = Conexion.connection();
-            if (con != null){
-                    smt = con.prepareStatement("SELECT * FROM player_stats WHERE id_jugador=?");
-                    smt.setInt(1,id);
-                    ResultSet jugadors_media = smt.executeQuery();
-                    if (jugadors_media.next()){
-                        Players_stats p = new Players_stats();
-                        p.setId_jugador(jugadors_media.getInt(1));
-                        p.setAvg_puntos(jugadors_media.getFloat(2));
-                        p.setAvg_rebotes(jugadors_media.getFloat(3));
-                        p.setAvg_asistencias(jugadors_media.getFloat(4));
-                        return  p;
-                    } else {
-                        Vista.imprimirMensaje("Ha ocurrido un error al buscar las medianas del jugador");
-                    }
-
-            } else {
-                throw new SQLException("No se ha podido establecer la conexion");
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-        } finally {
-            Conexion.close(con);
-            Conexion.close(smt);
-        }
-        return null;
-    }
 }

@@ -132,42 +132,6 @@ public class DaoMatch implements DAODB<Match>{
         return false;
     }
 
-
-    public List<Match> listarTodos() {
-        List<Match> matches = new ArrayList<>();
-
-        Connection con = null;
-        PreparedStatement smt = null;
-
-        try {
-            con = Conexion.connection();
-            if (con != null){
-                smt = con.prepareStatement("SELECT * FROM matches");
-                ResultSet mResult= smt.executeQuery();
-                while(mResult.next()){
-                    Match m= new Match();
-                    m.setId(mResult.getInt(1));
-                    m.setVisitante_id(mResult.getInt(2));
-                    m.setPuntos_visitante(mResult.getInt(3));
-                    m.setLocal_id(mResult.getInt(4));
-                    m.setPuntos_local(mResult.getInt(5));
-                    matches.add(m) ;
-                }
-                return matches;
-
-            } else {
-                throw new SQLException("No se ha podido establecer la conexion");
-            }
-        } catch (SQLException e){
-            Vista.imprimirMensaje(e.getMessage());
-        } finally {
-            Conexion.close(con);
-            Conexion.close(smt);
-        }
-
-        return null;
-    }
-
     public List<String> ResultPartits(String nom){
         List<String> partidos = new ArrayList<>();
         Connection con = null;

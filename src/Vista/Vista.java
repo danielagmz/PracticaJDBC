@@ -1,11 +1,9 @@
 package Vista;
 
 
-import Model.Model;
+
 import Model.Player;
 import Model.Players_stats;
-
-import java.sql.SQLException;
 import java.util.List;
 
 public class Vista {
@@ -28,8 +26,8 @@ public class Vista {
        }
    }
 
-   public static void imprimirPlayers(List<Player> lista) throws SQLException {
-       System.out.printf("%-20s%-8s%-8s%-15s","nom","alçada","pes","equip_actual");
+   public static void imprimirPlayers(List<Player> lista){
+       System.out.printf("%-30s%-8s%-8s","nom","alçada","pes");
        System.out.println();
        for (int i = 0; i < 55; i++) {
            System.out.print("-");
@@ -37,7 +35,7 @@ public class Vista {
 
        System.out.println();
        for (Player player : lista) {
-           System.out.printf("%-20s%-8d%-8d%-15s\n",player.getNom(),player.getAlcada(),player.getPes(), Model.obtenerNombreEquipo(player.getEquip_actual()));
+           System.out.printf("%-30s%-8d%-8d\n",player.getNom(),player.getAlcada(),player.getPes());
        }
    }
 

@@ -190,7 +190,7 @@ public class DaoPlayer implements DAODB<Player>{
                         jugadores.add(p);
                     }
                 } else {
-                   throw new SQLException ("Ha ocurrido un error al buscar los jugadores de ese equipo");
+                   throw new SQLException ("Ha ocurrido un error");
                 }
                 return jugadores;
             } else {

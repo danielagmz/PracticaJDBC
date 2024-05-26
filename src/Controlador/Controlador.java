@@ -10,90 +10,119 @@ import Vista.Vista;
 import megaLibreria.utilities;
 import Model.HistoricPlayers;
 import Model.Players_stats;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
+import java.util.ArrayList;
+
 import java.util.Scanner;
 
+/**
+ * clase que se encarga del funcionamiento del programa
+ */
 public class Controlador {
+    /**
+     * variable de input por teclado
+     */
     static Scanner scan = new Scanner(System.in);
+
+    /**
+     * lista los jugadores de un equipo introducido, siempre y cuando sea correcto dicho equipo
+     * @throws SQLException lanza una excepcion si hay algun problema con la conexion o si el equipo no es correcto
+     */
     public static void ListarJugadores() throws SQLException {
         String nom;
+        List<Player> jugadores;
         System.out.print("Dime un equipo: ");
         nom = scan.nextLine();
         Vista.imprimirMensaje ("Buscando...");
         if (VerificarNombre(nom)){
             DaoPlayer player = new DaoPlayer();
-            Vista.imprimirPlayers(player.listarTodos(nom));
+            jugadores=player.listarTodos(nom);
+            if (jugadores!=null){
+                Vista.imprimirPlayers(jugadores);
+            }else{
+                Vista.imprimirMensaje("Ese equipo no existe");
+                Menu.menuPrincipal();
+            }
+
         } else {
             Vista.imprimirMensaje("El nombre no es correcto");
         }
     }
 
+    /**
+     * Muestra las estadisticas de un jugador que se introduzca, siemrpe que sea correcto dicho jugador
+     */
     public static void MedianaJugador(){
         String nom;
+        List<Players_stats> jugadores;
         Vista.imprimirMensajeSeguido ("Dime un nombre de un jugador: ");
         nom = scan.nextLine();
         Vista.imprimirMensaje ("Buscando...");
         if (VerificarNombre(nom)){
             DaoPlayer player = new DaoPlayer();
-            Vista.imprimirPlayerStats(player.MedianasJugadores(nom));
+            jugadores=player.MedianasJugadores(nom);
+            if (!jugadores.isEmpty()){
+                Vista.imprimirPlayerStats(jugadores);
+            }else{
+                Vista.imprimirMensaje("Este jugador no existe");
+            }
         } else {
             Vista.imprimirMensaje("El nombre no es correcto");
         }
     }
 
+    /**
+     * Muestra los resultados de un equipo que se le pase, siempre que sea correcto el nombre
+     */
     public static void ResultadosPartidos(){
         String nom;
+        List<String> partits;
+
         System.out.print("Dime un equipo: ");
         nom = scan.nextLine();
         Vista.imprimirMensaje("Buscando...");
+
         if (VerificarNombre(nom)){
+            // leer los resultados de un partido usando la funcion de model que retorna una lista con ellos
             DaoMatch equipo = new DaoMatch();
-            Vista.impPartidosJugados(equipo.ResultPartits(nom));
+            partits=equipo.ResultPartits(nom);
+            // si no hay elementos en la lista quiere decir que no hay partidos de ese equipo y/o que no existe
+            if (!partits.isEmpty()){
+                Vista.impPartidosJugados(partits);
+            }else{
+                Vista.imprimirMensaje("No se han encontrado resultados");
+            }
+
         } else {
             Vista.imprimirMensaje("El nombre no es correcto");
         }
     }
-    private static boolean Verificar(String nom){
-        do{
-            nom = scan.nextLine();
-        }while (!nom.matches("^[a-zA-Z]+([-' ][a-zA-Z]+)*$"));
 
-        return false;
-    }
+    /**
+     * funcion que verifica que el nombre no tenga numeros o simbolos
+     * @param nom nombre a verificar
+     * @return retorna true si no tiene caracteres especiales y false si si
+     */
+
     private static boolean VerificarNombre(String nom){
         return nom.matches("^[a-zA-Z]+([-' ][a-zA-Z]+)*$");
     }
-    public static boolean ComprobarId(int id,String tabla){
-        Connection con = null;
-        PreparedStatement statement = null;
-        try {
-            con = Conexion.connection();
-            if (con != null){
-                    statement = con.prepareStatement("SELECT * FROM " + tabla+" WHERE id=?");
-                    statement.setInt(1,id);
-                    ResultSet resultSet = statement.executeQuery();
 
-                return resultSet.next();
-
-            } else {
-                throw new SQLException("No se ha podido establecer la conexion");
-            }
-        }catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            Conexion.close(con);
-            Conexion.close(statement);
-        }
-        return false;
-    }
-// todo borrar la rama desastre y recordar a chris hacer pull del main
-    // todo refactor para verificaciones
+    /**
+     * Inserta un jugador nuevo si no esta en la base de datos, si está solicita confirmacion de traspaso
+     * @throws SQLException si hay un problema con la lectura o escritura de la bd lanza una excepcion con texto descriptivo
+     */
     public static void InsertarJugador() throws SQLException {
         String nom;
-        boolean correcto=true;
+        boolean correcto;
         DaoPlayer db=new DaoPlayer();
         Player nPlayer=new Player();
         int id_equipActual;
@@ -103,7 +132,7 @@ public class Controlador {
         System.out.print("Nombre del jugador: ");
         nom = scan.nextLine();
 
-// todo si el nombre es un texto, y no esta en la base de datos (la select da -1),
+// si el nombre es un texto, y no esta en la base de datos (la select da -1),
 //  se agrega al objeto player el nombre. Si no (la select no da -1), este jugador ya existe y se llama a traspasar
         try {
             if (VerificarNombre(nom)){
@@ -117,33 +146,46 @@ public class Controlador {
                     System.out.print("Peso del jugador: ");
                     nPlayer.setPes(utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,1,false));
                     scan.nextLine();
-                    System.out.print("Equipo del jugador: ");
-                    equip_actual = scan.nextLine();
-                    Vista.imprimirMensaje("Comprobando equipo...");
-                    if (VerificarNombre(equip_actual)){
-                        id_equipActual= Model.obtenerIdEquipo(equip_actual);
-                        if (id_equipActual==-1){
-                            throw new IllegalArgumentException("Este equipo no existe");
-                        }else{
-                            nPlayer.setEquip_actual(id_equipActual);
+                    do {
+                        // hasta que el equipo no sea correcto no deja de preguntar
+                        correcto=true;
+                        try {
+                            System.out.print("Equipo del jugador: ");
+                            equip_actual = scan.nextLine();
+                            Vista.imprimirMensaje("Comprobando equipo...");
+
+                            if (VerificarNombre(equip_actual)) {
+                                id_equipActual = Model.obtenerIdEquipo(equip_actual);
+                                if (id_equipActual == -1) {
+                                    throw new IllegalArgumentException("Este equipo no existe");
+                                } else {
+                                    nPlayer.setEquip_actual(id_equipActual);
+                                }
+
+                                if (db.create(nPlayer)) {
+                                    Vista.imprimirMensaje("El jugador ha sido creado y asignado al equipo");
+                                } else {
+                                    Vista.imprimirMensaje("Ha habido un error creando al jugador");
+                                }
+                            } else {
+                                throw new IllegalArgumentException("El equipo no es correcto");
+                            }
+                        } catch (Exception e) {
+                            Vista.imprimirMensaje(e.getMessage());
+                            correcto=false;
                         }
-                        if (db.create(nPlayer)) {
-                            Vista.imprimirMensaje("El jugador ha sido creado y asignado al equipo");
-                        } else {
-                            Vista.imprimirMensaje("Ha habido un error creando al jugador");
-                        }
-                    }else{
-                        throw new IllegalArgumentException("El equipo no es correcto");
-                    }
+
+                    }while (!correcto);
 
                 } else{
                     Vista.imprimirMensaje("Este jugador ya existe en la base de datos");
 
-                    // todo switch de las opciones, case 1 (si), case 2 (no), case 3 (salir al menu principal)
+                    // switch de las opciones, case 1 (si), case 2 (no), case 3 (salir al menu principal)
                     switch ( Menu.confirmMenu("desea traspasarlo?",opt)){
                         case 1:
+                            // parametro puestop a true para que le pida confirmacion del nombre
                             traspas(true);
-                    // todo si se ejecuta traspaso le pedia nuevamente el nombre, lo he solucionado con un "confirme el nombre"
+
                         break;
                         case 2:
                             InsertarJugador();
@@ -154,16 +196,13 @@ public class Controlador {
                     }
                 }
             } else {
-                //todo aqui tendria que volverlo a preguntar
                throw new IllegalArgumentException("El nombre no es correcto");
             }
-            // todo arreglar y que pidan las cosas varias veces el nombre o el equipo, probablemente funcion
         } catch (IllegalArgumentException e) {
-           
+           Vista.imprimirMensaje(e.getMessage());
         }
 
     }
-
 
     public static void traspas(boolean traspas_equip) throws SQLException {
         String nom;
@@ -173,7 +212,7 @@ public class Controlador {
         DaoPlayer db = new DaoPlayer();
         String[] opt={"1- Si ✅","2- No ❌","3- Sortir 🏃‍♂️"};
 
-
+        // si el parametro es true quiere decir que viene desde la funcion de InsertarJugador
         if (!traspas_equip) {
             Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");
             nom = scan.nextLine();
@@ -186,11 +225,13 @@ public class Controlador {
 
 
         if (VerificarNombre(nom)){
-            //todo probar lo del update con el where
+            // busca el jugador en la base de datos y crea un objeto con sus atributos
             player.setId(Model.obtenerIdJugador(nom));
             player=db.read(player);
             Vista.mostrarGenerico(player,true);
             Vista.saltoLinea();
+            // menu para confirmar que se traspasa el jugador correcto
+            // 1 proceso de traspaso, 2 introducir de vuelta un nuevo jugador y 3 salir
             switch (Menu.confirmMenu("És aquest el jugador?",opt)){
                 case 1:
                     Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
@@ -200,6 +241,7 @@ public class Controlador {
                     equipo_nuevo= Model.obtenerIdEquipo(equipN);
                     Vista.imprimirMensaje("traspasando jugador ...");
                     player.setEquip_actual(equipo_nuevo);
+                    // si se ha podido modificar se avisa al usuario
                     if(db.update(player)){
                         Vista.imprimirMensaje("Traspasado correctamente");
                     }else {
@@ -212,9 +254,7 @@ public class Controlador {
 
                 default:
                     Menu.menuPrincipal();
-
             }
-
         } else {
             throw new IllegalArgumentException("El nombre no es correcto");
         }
@@ -224,12 +264,15 @@ public class Controlador {
         String nom;
         HistoricPlayers retirado;
         String nom_equip;
+        String[] opt={"1- Si ✅","2- No ❌","3- Sortir 🏃‍♂️"};
+        int id;
+        // recuperar datos como el nomnbre y el equipo actual del jugador
         Player playerRet=new Player();
         DaoPlayer dbp = new DaoPlayer();
-
+        // recuperar estadisticas de un jugador
         Players_stats ps=new Players_stats();
         DaoPlayerStats dbs= new DaoPlayerStats();
-
+        // tabla para guardar las estadisticas del jugador retirado
         DaoHistoricPlayers db=new DaoHistoricPlayers();
 
 
@@ -238,29 +281,160 @@ public class Controlador {
 
         if (VerificarNombre(nom)){
             Vista.imprimirMensaje("Recuperando datos...");
-            //todo a partir del id, leer y guardar un objeto de player y un objeto de stats
-            playerRet.setId(Model.obtenerIdJugador(nom));
-            ps.setId_jugador(Model.obtenerIdJugador(nom));
-            playerRet=dbp.read(playerRet);
-            ps=dbs.read(ps);
-            if (ps != null && playerRet!=null){
-                Vista.imprimirMensaje("Retirando jugador...");
-                //todo acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
-                nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
-                retirado=new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(),ps.getAvg_asistencias(),nom_equip);
+            //a partir del id, leer y guardar un objeto de player y un objeto de stats
+            id=Model.obtenerIdJugador(nom);
 
-                if (db.create(retirado)){
-                    dbs.delete(ps);
-                    dbp.delete(playerRet);
-                    Vista.imprimirMensaje("Jugador retirado con exito!");
-                }
-            }else{
-                Vista.imprimirMensaje("No se ha encontrado el jugador");
-                Menu.menuPrincipal();
+            playerRet.setId(id);
+            ps.setId_jugador(id);
+
+            playerRet=dbp.read(playerRet);  // datos basicos del jugador nombre,peso,altura
+            ps=dbs.read(ps);        // stats del jugador
+
+            Vista.mostrarGenerico(playerRet,true);
+            Vista.saltoLinea();
+            // corfimacion de que el jugador es correcto
+            // 1 proceso de retirar, 2 vuelta a preguntar un jugador y 3 o cualquier numero mas menu principal
+            switch (Menu.confirmMenu("es este el jugador que quieres retirar?",opt)){
+                case 1:
+                    // solo se hace el proceso si hay un jugador que retirar
+                    if (ps != null && playerRet!=null){
+                        Vista.imprimirMensaje("Retirando jugador...");
+                        //Acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
+                        nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
+                        retirado= // ↓ id_jugador,puntos,rebotes,asistencias y nombre del equipo (campos de la tabla historico) ↓
+                        new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(),ps.getAvg_asistencias(),nom_equip);
+                        // una vez creada la entrada en la tabla de historico, eliminar el jugador de players y por si el trigger no
+                        // funcionase tambien eliminar de player stats
+                        if (db.create(retirado)){
+                            dbs.delete(ps);
+                            dbp.delete(playerRet);
+                            Vista.imprimirMensaje("Jugador retirado con exito!");
+                        }
+                    }else{
+                        // si por cualquier otra cosa hubiese algun otro problema para encontrar el jugador, ser le vuelve a preguntar
+                        Vista.imprimirMensaje("Ha habido un problema al recuperar los datos de este jugador");
+                        Vista.imprimirMensaje("Intentalo de nuevo");
+
+                        retirarJugador();
+                    }
+                case 2:
+                    retirarJugador();
+
+                default:
+                    Menu.menuPrincipal();
             }
 
 
+        }
 
+    }
+
+    public static void IntroducirFranquicia(){
+        String nombre,franquicia;
+        do {
+            Vista.imprimirMensajeSeguido("Que franquicia quieres cambiar(Ej: Los Angeles Lakers): ");
+            nombre = scan.nextLine();
+            if (!VerificarNombre(nombre)){
+                Vista.imprimirMensaje("El nombre no es correcto");
+            }
+        } while (!VerificarNombre(nombre));
+        do {
+            Vista.imprimirMensajeSeguido("Escribe la franquicia: ");
+            franquicia = scan.nextLine();
+            if (!VerificarNombre(nombre)){
+                Vista.imprimirMensaje("La franquicia introducida no es correcto");
+            }
+        } while (!VerificarNombre(franquicia));
+        CambiarFranquicia(nombre,franquicia);
+    }
+
+    public static void CambiarFranquicia(String nombre, String franquicia){
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            Vista.imprimirMensaje("Actualizando franquicia...");
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("SELECT id FROM teams WHERE nom_complet=?");
+                smt.setString(1,nombre);
+                ResultSet id_team = smt.executeQuery();
+                if (id_team != null){
+                    if (id_team.next()){
+                        smt = con.prepareStatement("UPDATE teams SET franquicia=? WHERE id=?");
+                        smt.setString(1,franquicia);
+                        smt.setInt(2,id_team.getInt(1));
+                        smt.executeUpdate();
+                        Vista.imprimirMensaje("El cambio de Franquicia se ha realizado con exito");
+                    } else {
+                        Vista.imprimirMensaje("Ha ocurrido un error al buscar las medianas del jugador");
+                    }
+                } else {
+                    Controlador.InsertarJugador();
+                    Vista.imprimirMensaje("Creando Jugador...");
+                }
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+    }
+
+    public static void ActualizarDatos()  {
+        File carpetaFicheros = new File("Ficheros");
+        File f = new File("Ficheros/partidos.csv");
+        File f2 = new File("Ficheros/jugadores.csv");
+        ArrayList<String[]> partidos = new ArrayList<>();
+        ArrayList<String[]> jugadores = new ArrayList<>();
+        String linea,linea2;
+
+        Connection con = null;
+        PreparedStatement smt = null;
+
+        if (!carpetaFicheros.exists()){
+            carpetaFicheros.mkdir();
+        }
+        try {
+            con = Conexion.connection();
+            Scanner scan = new Scanner(f);
+            Scanner scan2 = new Scanner(f2);
+            while (scan.hasNextLine()) {
+                linea = scan.nextLine();
+                partidos.add(linea.split(";"));
+            }
+            while (scan2.hasNextLine()){
+                linea2 = scan2.nextLine();
+                jugadores.add(linea2.split(";"));
+            }
+            if (con != null){
+                for (String[] partido : partidos) {
+                    smt = con.prepareStatement("UPDATE matches SET punts_visitant=?,punts_local=? WHERE id=?");
+                    smt.setInt(1, Integer.parseInt(partido[1]));
+                    smt.setInt(2, Integer.parseInt(partido[2]));
+                    smt.setInt(3, Integer.parseInt(partido[0]));
+                    smt.executeUpdate();
+                }
+                for (String[] jugadore : jugadores) {
+                    smt = con.prepareStatement("UPDATE players_matches SET punts=?,rebots=?,assistencies=? WHERE id_match=? AND id_jugador=?");
+                    smt.setInt(1, Integer.parseInt(jugadore[2]));
+                    smt.setInt(2, Integer.parseInt(jugadore[3]));
+                    smt.setInt(3, Integer.parseInt(jugadore[4]));
+                    smt.setInt(4, Integer.parseInt(jugadore[0]));
+                    smt.setInt(5, Integer.parseInt(jugadore[1]));
+                    smt.executeUpdate();
+                }
+                Vista.imprimirMensaje("Se han actualizado los datos");
+            } else {
+                throw new SQLException("No se h podido establecer la conexion");
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e){
+            Vista.imprimirMensaje(e.getMessage());
         }
 
     }

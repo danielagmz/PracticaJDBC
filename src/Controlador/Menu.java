@@ -49,7 +49,7 @@ public class Menu {
                     Controlador.traspas(false);
                     break;
                 case 6:
-
+                    Controlador.ActualizarDatos();
                     break;
                 case 7:
 
@@ -58,7 +58,7 @@ public class Menu {
                     Controlador.retirarJugador();
                     break;
                 case 9:
-
+                    Controlador.IntroducirFranquicia();
                     break;
                 case 0:
                     System.exit(1);
@@ -80,4 +80,6 @@ public class Menu {
 
         return opcio;
     }
+
+
 }
