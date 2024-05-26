@@ -403,6 +403,7 @@ public class Controlador {
             carpetaFicheros.mkdir();
         }
         try {
+            Vista.imprimirMensaje("Insertando datos..");
             con = Conexion.connection();
             Scanner scan = new Scanner(f);
             Scanner scan2 = new Scanner(f2);
@@ -419,7 +420,12 @@ public class Controlador {
                     matchRet.setPuntos_visitante(Integer.parseInt(partido[1]));
                     matchRet.setPuntos_local(Integer.parseInt(partido[2]));
                     matchRet.setId(Integer.parseInt(partido[0]));
-                    dbm.update(matchRet);
+                    if (dbm.update(matchRet)){
+                        Vista.imprimirMensaje("Actualizado..");
+                    }else {
+                        Vista.imprimirMensaje("No se ha podido actualizar los datos de este partido");
+                    }
+
                 }
                 for (String[] jugadore : jugadores) {
                     partidoJugadores.setId_match(Integer.parseInt(jugadore[0]));
@@ -427,7 +433,11 @@ public class Controlador {
                     partidoJugadores.setPunts(Integer.parseInt(jugadore[2]));
                     partidoJugadores.setRebots(Integer.parseInt(jugadore[3]));
                     partidoJugadores.setAssist(Integer.parseInt(jugadore[4]));
-                    dbp.update(partidoJugadores);
+                    if (dbp.update(partidoJugadores)){
+                        Vista.imprimirMensaje("Actualizado..");
+                    }else {
+                        Vista.imprimirMensaje("No se ha podido actualizar los datos de este jugador");
+                    }
                 }
 
                 Vista.imprimirMensaje("Se han actualizado los datos");
