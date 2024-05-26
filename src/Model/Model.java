@@ -3,15 +3,18 @@ package Model;
 import Controlador.Conexion;
 import Vista.Vista;
 
+import javax.print.attribute.standard.MediaSize;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Model {
 
     public static int obtenerIdEquipo(String nombre) throws SQLException {
-        int id_equipo=-1;
+        int id_equipo = -1;
 
         Connection con = null;
         PreparedStatement smt = null;
@@ -22,15 +25,14 @@ public class Model {
                 smt.setString(1, nombre);
                 ResultSet resultado = smt.executeQuery();
                 if (resultado.next()) {
-                    id_equipo=resultado.getInt(1);
+                    id_equipo = resultado.getInt(1);
                 }
             } else {
                 throw new SQLException();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new SQLException("Ha ocurrido un error al buscar este equipo");
-        }
-        finally {
+        } finally {
             Conexion.close(con);
             Conexion.close(smt);
         }
@@ -39,7 +41,7 @@ public class Model {
     }
 
     public static int obtenerIdJugador(String nombre) throws SQLException {
-        int id_jug=-1;
+        int id_jug = -1;
 
         Connection con = null;
         PreparedStatement smt = null;
@@ -50,15 +52,14 @@ public class Model {
                 smt.setString(1, nombre);
                 ResultSet resultado = smt.executeQuery();
                 if (resultado.next()) {
-                    id_jug=resultado.getInt(1);
+                    id_jug = resultado.getInt(1);
                 }
             } else {
                 throw new SQLException();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new SQLException("Ha ocurrido un error al buscar este jugador");
-        }
-        finally {
+        } finally {
             Conexion.close(con);
             Conexion.close(smt);
         }
@@ -77,15 +78,14 @@ public class Model {
                 smt.setInt(1, id);
                 ResultSet resultado = smt.executeQuery();
                 if (resultado.next()) {
-                    nombre=resultado.getString(1);
+                    nombre = resultado.getString(1);
                 }
             } else {
                 throw new SQLException();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             Vista.imprimirMensaje("Ha ocurrido un error al buscar este equipo");
-        }
-        finally {
+        } finally {
             Conexion.close(con);
             Conexion.close(smt);
         }
@@ -93,4 +93,91 @@ public class Model {
         return nombre;
     }
 
+    public static List<PlayerMatches> obtenerResultPartidos(String nombre) {
+        Connection con = null;
+        PreparedStatement smt = null;
+        List<PlayerMatches> resultados = new ArrayList<>();
+        int id_jugador;
+        try {
+            id_jugador = obtenerIdJugador(nombre);
+            con = Conexion.connection();
+            if (con != null) {
+                smt = con.prepareStatement("SELECT id_match,punts,rebots,assistencies FROM players_matches WHERE id_jugador=?");
+                smt.setInt(1, id_jugador);
+                ResultSet jugadors = smt.executeQuery();
+                while (jugadors.next()) {
+                    PlayerMatches p = new PlayerMatches();
+                    p.setId_match(jugadors.getInt(1));
+                    p.setPunts(jugadors.getInt(2));
+                    p.setRebots(jugadors.getInt(3));
+                    p.setAssist(jugadors.getInt(4));
+                    resultados.add(p);
+
+                }
+
+                return resultados;
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e) {
+            Vista.imprimirMensaje(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+        return null;
+    }
+
+
+    public static void modificarPartido(int id_partido,int puntos, int rebotes, int asis){
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("UPDATE players_matches SET punts=?,rebots=?,assistencies=? WHERE id_match=?");
+                smt.setInt(1, puntos);
+                smt.setInt(2, rebotes);
+                smt.setInt(3, asis);
+                smt.setInt(4, id_partido);
+                smt.executeUpdate();
+
+
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            Vista.imprimirMensaje(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+    }
+
+    public static List<String> obtenerPartidos(int id){
+        List<String> partidos = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("CALL PartidosJugadores(?)");
+                smt.setInt(1,id);
+                ResultSet partido = smt.executeQuery();
+                while (partido.next()){
+                    String col1 = partido.getString(1);
+                    partidos.add(col1);
+                }
+                return partidos;
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            Vista.imprimirMensaje(e.getMessage());
+        }
+        return null;
+    }
+
 }
+
+

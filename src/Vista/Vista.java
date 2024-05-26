@@ -4,6 +4,7 @@ package Vista;
 
 import Model.Player;
 import Model.Players_stats;
+import Model.PlayerMatches;
 import java.util.List;
 
 public class Vista {
@@ -25,6 +26,28 @@ public class Vista {
            System.out.printf("%-13.2f%-14.2f%-18.2f\n",player.getAvg_puntos(),player.getAvg_rebotes(),player.getAvg_asistencias());
        }
    }
+
+//    public static void imprimirPlayerResult(List<String> partido,List<PlayerMatches> lista){
+//        System.out.printf("%-20s%-10s%-10s%-10s","partido","Puntos","Rebotes","Asistencies");
+//        System.out.println();
+//        for (int i = 0; i < 50; i++) {
+//            System.out.print("-");
+//        }
+//        System.out.println();
+//        for (String s : partido) {
+//            for (PlayerMatches player : lista) {
+//                System.out.printf(" %-20s%-10d%-10d%-10d\n",s,player.getPunts(),player.getRebots(),player.getAssist());
+//            }
+//        }
+//    }
+    public static void imprimirPlayerResult(List<String> partidos, List<PlayerMatches> lista) {
+        System.out.printf("\t%-20s%-10s%-10s%-10s\n","partido","Puntos","Rebotes","Asistencies");
+        for (int i = 0; i < partidos.size(); i++) {
+            String partido = partidos.get(i);
+            PlayerMatches player = lista.get(i);
+            System.out.printf("%-5d%s %d %d %d\n",i+1, partido, player.getPunts(), player.getRebots(), player.getAssist());
+        }
+    }
 
    public static void imprimirPlayers(List<Player> lista){
        System.out.printf("%-30s%-8s%-8s","nom","alçada","pes");

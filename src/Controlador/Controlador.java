@@ -1,15 +1,13 @@
 package Controlador;
 
-import Model.Dao.DaoHistoricPlayers;
-import Model.Dao.DaoMatch;
-import Model.Dao.DaoPlayer;
-import Model.Dao.DaoPlayerStats;
+import Model.Dao.*;
 import Model.Model;
 import Model.Player;
 import Vista.Vista;
 import megaLibreria.utilities;
 import Model.HistoricPlayers;
 import Model.Players_stats;
+import Model.PlayerMatches;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -113,7 +111,10 @@ public class Controlador {
      */
 
     private static boolean VerificarNombre(String nom){
-        return nom.matches("^[a-zA-Z]+([-' ][a-zA-Z]+)*$");
+        return nom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑčČ\\s-.]+$");
+    }
+    private static boolean VerificarEntero(String nom){
+        return nom.matches("^[0-9]+$");
     }
 
     /**
@@ -387,8 +388,8 @@ public class Controlador {
         File carpetaFicheros = new File("Ficheros");
         File f = new File("Ficheros/partidos.csv");
         File f2 = new File("Ficheros/jugadores.csv");
-        ArrayList<String[]> partidos = new ArrayList<>();
-        ArrayList<String[]> jugadores = new ArrayList<>();
+        List<String[]> partidos = new ArrayList<>();
+        List<String[]> jugadores = new ArrayList<>();
         String linea,linea2;
 
         Connection con = null;
@@ -437,6 +438,48 @@ public class Controlador {
             Vista.imprimirMensaje(e.getMessage());
         }
 
+    }
+
+    public static void modifcarEstadisticas() throws SQLException {
+        List<String> partidos;
+        String nombre;
+        int id,partido,puntos,rebotes,asis,id_partido;
+        List<PlayerMatches> pruebas = null;
+        do {
+            Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");
+            nombre = scan.nextLine();
+            if (!VerificarNombre(nombre)) {
+                Vista.imprimirMensaje("El nombre no es correcto");
+            }
+        } while (!VerificarNombre(nombre));
+        Vista.imprimirMensaje("Buscando resultados..");
+        id = Model.obtenerIdJugador(nombre);
+        partidos = Model.obtenerPartidos(id);
+        pruebas = Model.obtenerResultPartidos(nombre);
+        if (!pruebas.isEmpty() && !partidos.isEmpty()){
+            Vista.imprimirPlayerResult(partidos,pruebas);
+            Vista.imprimirMensajeSeguido("Que partido quieres modificar: ");
+            partido = utilities.introducirNumeroEntero(scan,pruebas.size(),1,false);
+
+            id_partido = pruebas.get(partido).getId_match();
+
+                Vista.imprimirMensajeSeguido("Puntos: ");
+                puntos = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+
+
+
+                Vista.imprimirMensajeSeguido("Rebotes: ");
+                rebotes = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+
+
+
+                Vista.imprimirMensajeSeguido("Asistencias: ");
+                asis = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+
+            Model.modificarPartido(id_partido,puntos,rebotes,asis);
+        }else{
+            Vista.imprimirMensaje("Este jugador no existe");
+        }
     }
 
 }

@@ -14,7 +14,9 @@ CREATE TABLE players (
 );
 
 -- Insertar datos en la tabla "players"
-INSERT INTO players (nom, alcada, pes, equipo_actual)
+INSERT INTO players (nom, alcada, pes, equipo_actual) 
+VALUES 
+('LeBron James', 200, 90, 1),
 ('Kevin Durant', 201, 91, 1),
 ('Stephen Curry', 202, 92, 1),
 ('Giannis Antetokounmpo', 203, 93, 1),
@@ -384,8 +386,7 @@ CREATE TABLE player_stats (
     id_jugador INT,
     avg_puntos DECIMAL(3,1),
     avg_rebotes DECIMAL(3,1),
-    avg_asistencias DECIMAL(3,1),
-    CONSTRAINT fk_player_stats_players FOREIGN KEY (id_jugador) REFERENCES players(id)
+    avg_asistencias DECIMAL(3,1)
 );
 
 -- Insertar datos en la tabla "player_stats"
@@ -473,7 +474,7 @@ END //
 DELIMITER ;
 
 -- ---------------- Triggers -----------------------------------
-
+		-- Trigger Insert
 DROP TRIGGER IF EXISTS player_stats_INS;
 DELIMITER //
 CREATE TRIGGER player_stats_INS AFTER INSERT ON players FOR EACH ROW
@@ -492,10 +493,10 @@ BEGIN
     WHERE id_jugador=OLD.id;
 END
 // DELIMITER ;
-
-DROP TRIGGER IF EXISTS calculate_avg_points;
+		-- Trigger Insert
+DROP TRIGGER IF EXISTS calculate_avg_points_insert;
 DELIMITER //
-CREATE TRIGGER calculate_avg_stats AFTER INSERT ON players_matches
+CREATE TRIGGER calculate_avg_stats_insert AFTER INSERT ON players_matches
 FOR EACH ROW
 BEGIN
     DECLARE total_games INT;
@@ -508,6 +509,97 @@ BEGIN
     DECLARE avg_assists DECIMAL(10,2);
     
     -- Obtener el id del jugador del nuevo registro insertado
+    SET player_id = NEW.id_jugador;
+    
+    -- Contar el total de partidos jugados por el jugador
+    SELECT COUNT(DISTINCT id_match) INTO total_games
+    FROM players_matches
+    WHERE id_jugador = player_id;
+    
+    -- Sumar los puntos, rebotes y asistencias del jugador en todos los partidos
+    SELECT SUM(punts), SUM(rebots), SUM(assistencies) INTO total_points, total_rebounds, total_assists
+    FROM players_matches
+    WHERE id_jugador = player_id;
+    
+    -- Calcular el promedio de puntos, rebotes y asistencias del jugador
+    SET avg_points = total_points / total_games;
+    SET avg_rebounds = total_rebounds / total_games;
+    SET avg_assists = total_assists / total_games;
+    
+    -- Actualizar el promedio de puntos, rebotes y asistencias en la tabla player_stats
+    UPDATE player_stats
+    SET avg_puntos = avg_points,
+        avg_rebotes = avg_rebounds,
+        avg_asistencias = avg_assists
+    WHERE id_jugador = player_id;
+END //
+DELIMITER ;
+
+		-- Trigger Delete
+DROP TRIGGER IF EXISTS calculate_avg_stats_after_delete;
+DELIMITER //
+CREATE TRIGGER calculate_avg_stats_after_delete AFTER DELETE ON players_matches
+FOR EACH ROW
+BEGIN
+    DECLARE total_games INT;
+    DECLARE total_points DECIMAL(10,2);
+    DECLARE total_rebounds INT;
+    DECLARE total_assists INT;
+    DECLARE player_id INT;
+    DECLARE avg_points DECIMAL(10,2);
+    DECLARE avg_rebounds DECIMAL(10,2);
+    DECLARE avg_assists DECIMAL(10,2);
+    
+    -- Obtener el id del jugador del registro eliminado
+    SET player_id = OLD.id_jugador;
+    
+    -- Contar el total de partidos jugados por el jugador
+    SELECT COUNT(DISTINCT id_match) INTO total_games
+    FROM players_matches
+    WHERE id_jugador = player_id;
+    
+    -- Sumar los puntos, rebotes y asistencias del jugador en todos los partidos
+    SELECT IFNULL(SUM(punts), 0), IFNULL(SUM(rebots), 0), IFNULL(SUM(assistencies), 0) INTO total_points, total_rebounds, total_assists
+    FROM players_matches
+    WHERE id_jugador = player_id;
+    
+    -- Evitar división por cero
+    IF total_games = 0 THEN
+        SET avg_points = 0;
+        SET avg_rebounds = 0;
+        SET avg_assists = 0;
+    ELSE
+        -- Calcular el promedio de puntos, rebotes y asistencias del jugador
+        SET avg_points = total_points / total_games;
+        SET avg_rebounds = total_rebounds / total_games;
+        SET avg_assists = total_assists / total_games;
+    END IF;
+    
+    -- Actualizar el promedio de puntos, rebotes y asistencias en la tabla player_stats
+    UPDATE player_stats
+    SET avg_puntos = avg_points,
+        avg_rebotes = avg_rebounds,
+        avg_asistencias = avg_assists
+    WHERE id_jugador = player_id;
+END //
+DELIMITER ;
+
+		-- Trigger Update
+DROP TRIGGER IF EXISTS calculate_avg_stats_after_update;
+DELIMITER //
+CREATE TRIGGER calculate_avg_stats_after_update AFTER UPDATE ON players_matches
+FOR EACH ROW
+BEGIN
+    DECLARE total_games INT;
+    DECLARE total_points DECIMAL(10,2);
+    DECLARE total_rebounds INT;
+    DECLARE total_assists INT;
+    DECLARE player_id INT;
+    DECLARE avg_points DECIMAL(10,2);
+    DECLARE avg_rebounds DECIMAL(10,2);
+    DECLARE avg_assists DECIMAL(10,2);
+    
+    -- Obtener el id del jugador del registro actualizado
     SET player_id = NEW.id_jugador;
     
     -- Contar el total de partidos jugados por el jugador

@@ -52,7 +52,7 @@ public class Menu {
                     Controlador.ActualizarDatos();
                     break;
                 case 7:
-
+                    Controlador.modifcarEstadisticas();
                      break;
                 case 8:
                     Controlador.retirarJugador();
