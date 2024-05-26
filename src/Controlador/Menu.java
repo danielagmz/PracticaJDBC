@@ -49,7 +49,7 @@ public class Menu {
                     Controlador.traspas(false);
                     break;
                 case 6:
-
+                    Controlador.ActualizarDatos();
                     break;
                 case 7:
 

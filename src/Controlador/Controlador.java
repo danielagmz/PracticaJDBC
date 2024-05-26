@@ -10,10 +10,15 @@ import Vista.Vista;
 import megaLibreria.utilities;
 import Model.HistoricPlayers;
 import Model.Players_stats;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controlador {
@@ -212,9 +217,7 @@ public class Controlador {
 
                 default:
                     Menu.menuPrincipal();
-
             }
-
         } else {
             throw new IllegalArgumentException("El nombre no es correcto");
         }
@@ -315,6 +318,62 @@ public class Controlador {
             Conexion.close(con);
             Conexion.close(smt);
         }
+    }
+
+    public static void ActualizarDatos()  {
+        File carpetaFicheros = new File("Ficheros");
+        File f = new File("Ficheros/partidos.csv");
+        File f2 = new File("Ficheros/jugadores.csv");
+        ArrayList<String[]> partidos = new ArrayList<>();
+        ArrayList<String[]> jugadores = new ArrayList<>();
+        String linea,linea2;
+
+        Connection con = null;
+        PreparedStatement smt = null;
+
+        if (!carpetaFicheros.exists()){
+            carpetaFicheros.mkdir();
+        }
+        try {
+            con = Conexion.connection();
+            Scanner scan = new Scanner(f);
+            Scanner scan2 = new Scanner(f2);
+            while (scan.hasNextLine()) {
+                linea = scan.nextLine();
+                partidos.add(linea.split(";"));
+            }
+            while (scan2.hasNextLine()){
+                linea2 = scan2.nextLine();
+                jugadores.add(linea2.split(";"));
+            }
+            if (con != null){
+                for (int i = 0; i <partidos.size(); i++) {
+                    smt = con.prepareStatement("UPDATE matches SET punts_visitant=?,punts_local=? WHERE id=?");
+                    smt.setInt(1,Integer.parseInt(partidos.get(i)[1]));
+                    smt.setInt(2,Integer.parseInt(partidos.get(i)[2]));
+                    smt.setInt(3,Integer.parseInt(partidos.get(i)[0]));
+                    smt.executeUpdate();
+                }
+                for (int i = 0; i <jugadores.size(); i++) {
+                    smt = con.prepareStatement("UPDATE players_matches SET punts=?,rebots=?,assistencies=? WHERE id_match=? AND id_jugador=?");
+                    smt.setInt(1,Integer.parseInt(jugadores.get(i)[2]));
+                    smt.setInt(2,Integer.parseInt(jugadores.get(i)[3]));
+                    smt.setInt(3,Integer.parseInt(jugadores.get(i)[4]));
+                    smt.setInt(4,Integer.parseInt(jugadores.get(i)[0]));
+                    smt.setInt(5,Integer.parseInt(jugadores.get(i)[1]));
+                    smt.executeUpdate();
+                }
+                Vista.imprimirMensaje("Se han actualizado los datos");
+            } else {
+                throw new SQLException("No se h podido establecer la conexion");
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e){
+            Vista.imprimirMensaje(e.getMessage());
+        }
+
     }
 
 }
