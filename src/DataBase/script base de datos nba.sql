@@ -473,6 +473,23 @@ WHERE ma.id_visitante = vId_equipo OR ma.id_local = vId_equipo;
 END //
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS PartidosJugadores;
+DELIMITER //
+CREATE PROCEDURE PartidosJugadores(IN pId_jugador INT)
+BEGIN
+	DECLARE vId_partido INT;
+
+    SELECT equipo_actual INTO vId_partido
+		FROM players
+	WHERE id = pId_jugador;
+SELECT CONCAT(te1.nom, ' - ', te2.nom) AS match_result
+	FROM matches ma
+	INNER JOIN teams te1 ON ma.id_visitante = te1.id
+	INNER JOIN teams te2 ON ma.id_local = te2.id
+WHERE ma.id_visitante = vId_partido OR ma.id_local = vId_partido;
+END //
+DELIMITER ;
+
 -- ---------------- Triggers -----------------------------------
 		-- Trigger Insert
 DROP TRIGGER IF EXISTS player_stats_INS;
