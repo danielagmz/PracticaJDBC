@@ -20,12 +20,12 @@ VALUES
 ('Kevin Durant', 208, 109, 2),
 ('Stephen Curry', 191, 84, 3),
 ('Giannis Antetokounmpo', 211, 110, 4),
-('Luka Dončić', 201, 104, 5),
+('Luka Doncic', 201, 104, 5),
 ('James Harden', 196, 100, 6),
 ('Anthony Davis', 208, 115, 1),
 ('Kawhi Leonard', 201, 102, 7),
 ('Damian Lillard', 188, 88, 8),
-('Nikola Jokić', 211, 129, 9),
+('Nikola Jokic', 211, 129, 9),
 ('Jayson Tatum', 203, 95, 10),
 ('Jimmy Butler', 201, 104, 11),
 ('Joel Embiid', 213, 127, 6),
@@ -222,8 +222,7 @@ CREATE TABLE player_stats (
     id_jugador INT,
     avg_puntos DECIMAL(3,1),
     avg_rebotes DECIMAL(3,1),
-    avg_asistencias DECIMAL(3,1),
-    CONSTRAINT fk_player_stats_players FOREIGN KEY (id_jugador) REFERENCES players(id)
+    avg_asistencias DECIMAL(3,1)
 );
 
 -- Insertar datos en la tabla "player_stats"
@@ -282,15 +281,7 @@ VALUES
 	(39,54.4,13.9,17.2,'Jazz'),
 	(40,44.4,12.8,21.7,'Grizzlies');
 
--------------------- Constraints --------------------------------
-    
-    
-    ALTER TABLE players
-		ADD CONSTRAINT fk_players_teams FOREIGN KEY (equipo_actual)
-    REFERENCES teams (id);
-        
-        
------------------- Procedures -----------------------------------
+-- ---------------- Procedures -----------------------------------
 
 DROP PROCEDURE IF EXISTS Partidos;
 DELIMITER //
@@ -308,3 +299,23 @@ SELECT CONCAT(te1.nom, ' - ', te2.nom, ': ', ma.punts_visitant, '-', ma.punts_lo
 WHERE ma.id_visitante = vId_equipo OR ma.id_local = vId_equipo;
 END //
 DELIMITER ;
+
+-- -------------------- triggers --------------------------
+DROP TRIGGER IF EXISTS player_stats_INS;
+DELIMITER //
+CREATE TRIGGER player_stats_INS AFTER INSERT ON players FOR EACH ROW
+BEGIN
+	INSERT INTO player_stats(id_jugador,avg_puntos,avg_rebotes,avg_asistencias)
+    VALUES(NEW.id,0,0,0);
+END
+// DELIMITER ;
+
+DELIMITER //
+DROP TRIGGER IF EXISTS player_stats_DEL;
+DELIMITER //
+CREATE TRIGGER player_stats_DEL AFTER DELETE ON players FOR EACH ROW
+BEGIN
+	DELETE FROM player_stats
+    WHERE id_jugador=OLD.id;
+END
+// DELIMITER ;
