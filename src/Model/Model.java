@@ -1,6 +1,7 @@
 package Model;
 
 import Controlador.Conexion;
+import Controlador.Controlador;
 import Vista.Vista;
 
 import javax.print.attribute.standard.MediaSize;
@@ -92,6 +93,31 @@ public class Model {
         // retorna menos uno si no se encuentran registros
         return nombre;
     }
+    public static int obtenerIdEquipoNomComplet(String nombre){
+        Connection con = null;
+        PreparedStatement smt = null;
+        int id = 0;
+        try {
+            con = Conexion.connection();
+            if (con != null){
+                smt = con.prepareStatement("SELECT id FROM teams WHERE nom_complet=?");
+                smt.setString(1,nombre);
+                ResultSet id_team = smt.executeQuery();
+                if (id_team.next()){
+                    id = id_team.getInt(1);
+                }
+            } else {
+                throw new SQLException("No se ha podido establecer la conexion");
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+        return id;
+    }
+
 
     public static List<PlayerMatches> obtenerResultPartidos(String nombre) {
         Connection con = null;
@@ -112,7 +138,6 @@ public class Model {
                     p.setRebots(jugadors.getInt(3));
                     p.setAssist(jugadors.getInt(4));
                     resultados.add(p);
-
                 }
 
                 return resultados;
@@ -125,44 +150,19 @@ public class Model {
             Conexion.close(con);
             Conexion.close(smt);
         }
-        return null;
+      return resultados;
     }
 
 
-    public static void modificarPartido(int id_partido,int puntos, int rebotes, int asis){
-        Connection con = null;
-        PreparedStatement smt = null;
-        try {
-            con = Conexion.connection();
-            if (con != null){
-                smt = con.prepareStatement("UPDATE players_matches SET punts=?,rebots=?,assistencies=? WHERE id_match=?");
-                smt.setInt(1, puntos);
-                smt.setInt(2, rebotes);
-                smt.setInt(3, asis);
-                smt.setInt(4, id_partido);
-                smt.executeUpdate();
-
-
-            } else {
-                throw new SQLException("No se ha podido establecer la conexion");
-            }
-        } catch (SQLException e){
-            Vista.imprimirMensaje(e.getMessage());
-        } finally {
-            Conexion.close(con);
-            Conexion.close(smt);
-        }
-    }
-
-    public static List<String> obtenerPartidos(int id){
+    public static List<String> obtenerPartidos(int id_jugador){
         List<String> partidos = new ArrayList<>();
-        Connection con = null;
-        PreparedStatement smt = null;
+        Connection con;
+        PreparedStatement smt;
         try {
             con = Conexion.connection();
             if (con != null){
                 smt = con.prepareStatement("CALL PartidosJugadores(?)");
-                smt.setInt(1,id);
+                smt.setInt(1,id_jugador);
                 ResultSet partido = smt.executeQuery();
                 while (partido.next()){
                     String col1 = partido.getString(1);
@@ -175,7 +175,7 @@ public class Model {
         } catch (SQLException e){
             Vista.imprimirMensaje(e.getMessage());
         }
-        return null;
+        return partidos;
     }
 
 }

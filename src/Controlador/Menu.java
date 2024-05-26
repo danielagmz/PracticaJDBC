@@ -34,22 +34,22 @@ public class Menu {
 
             switch (opcio){
                 case 1:
-                    Controlador.ListarJugadores();
+                    Controlador.listarJugadores();
                     break;
                 case 2:
-                    Controlador.MedianaJugador();
+                    Controlador.medianaJugador();
                     break;
                 case 3:
-                    Controlador.ResultadosPartidos();
+                    Controlador.resultadosPartidos();
                     break;
                 case 4:
-                    Controlador.InsertarJugador();
+                    Controlador.insertarJugador();
                     break;
                 case 5:
                     Controlador.traspas(false);
                     break;
                 case 6:
-                    Controlador.ActualizarDatos();
+                    Controlador.actualizarDatos();
                     break;
                 case 7:
                     Controlador.modifcarEstadisticas();
@@ -58,7 +58,7 @@ public class Menu {
                     Controlador.retirarJugador();
                     break;
                 case 9:
-                    Controlador.IntroducirFranquicia();
+                    Controlador.introducirFranquicia();
                     break;
                 case 0:
                     System.exit(1);

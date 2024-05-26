@@ -231,7 +231,7 @@ public class DaoPlayer implements DAODB<Player>{
                         Vista.imprimirMensaje("Ha ocurrido un error al buscar las medianas del jugador");
                     }
                 } else {
-                    Controlador.InsertarJugador();
+                    Controlador.insertarJugador();
                     Vista.imprimirMensaje("Creando Jugador...");
 
                 }
