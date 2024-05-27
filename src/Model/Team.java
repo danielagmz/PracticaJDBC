@@ -5,15 +5,6 @@ public class Team {
     private String nombre;
 
     private String franquicia;
-    private String nom_complet;
-
-    public String getNom_complet() {
-        return nom_complet;
-    }
-
-    public void setNom_complet(String nom_complet) {
-        this.nom_complet = nom_complet;
-    }
 
     public String getFranquicia() {
         return franquicia;

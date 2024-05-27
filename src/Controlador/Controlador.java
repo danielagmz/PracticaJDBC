@@ -13,9 +13,6 @@ import Model.Team;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -114,9 +111,6 @@ public class Controlador {
 
     private static boolean verificarNombre(String nom){
         return nom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑčČ\\s-.]+$");
-    }
-    private static boolean verificarEntero(String nom){
-        return nom.matches("^[0-9]+$");
     }
 
     /**
@@ -388,23 +382,22 @@ public class Controlador {
         File f2 = new File("Ficheros/jugadores.csv");
         List<String[]> partidos = new ArrayList<>();
         List<String[]> jugadores = new ArrayList<>();
+
+        String linea,linea2;
+
         Match matchRet = new Match();
         DaoMatch dbm = new DaoMatch();
 
         PlayerMatches partidoJugadores = new PlayerMatches();
         DaoPlayerMatches dbp = new DaoPlayerMatches();
 
-        String linea,linea2;
-
-        Connection con = null;
-        PreparedStatement smt = null;
-
-        if (!carpetaFicheros.exists()){
-            carpetaFicheros.mkdir();
+        if (!carpetaFicheros.exists()) {
+            boolean carpetaCreada = carpetaFicheros.mkdir();
+            String mensaje = carpetaCreada ? "Se ha creado la carpeta correctamente" : "No se ha podido crear la carpeta Ficheros";
+            Vista.imprimirMensaje(mensaje);
         }
         try {
             Vista.imprimirMensaje("Insertando datos..");
-            con = Conexion.connection();
             Scanner scan = new Scanner(f);
             Scanner scan2 = new Scanner(f2);
             while (scan.hasNextLine()) {
@@ -415,40 +408,35 @@ public class Controlador {
                 linea2 = scan2.nextLine();
                 jugadores.add(linea2.split(";"));
             }
-            if (con != null){
-                for (String[] partido : partidos) {
-                    matchRet.setPuntos_visitante(Integer.parseInt(partido[1]));
-                    matchRet.setPuntos_local(Integer.parseInt(partido[2]));
-                    matchRet.setId(Integer.parseInt(partido[0]));
-                    if (dbm.update(matchRet)){
-                        Vista.imprimirMensaje("Actualizado..");
-                    }else {
-                        Vista.imprimirMensaje("No se ha podido actualizar los datos de este partido");
-                    }
 
-                }
-                for (String[] jugadore : jugadores) {
-                    partidoJugadores.setId_match(Integer.parseInt(jugadore[0]));
-                    partidoJugadores.setId_jug(Integer.parseInt(jugadore[1]));
-                    partidoJugadores.setPunts(Integer.parseInt(jugadore[2]));
-                    partidoJugadores.setRebots(Integer.parseInt(jugadore[3]));
-                    partidoJugadores.setAssist(Integer.parseInt(jugadore[4]));
-                    if (dbp.update(partidoJugadores)){
-                        Vista.imprimirMensaje("Actualizado..");
-                    }else {
-                        Vista.imprimirMensaje("No se ha podido actualizar los datos de este jugador");
-                    }
+            for (String[] partido : partidos) {
+                matchRet.setPuntos_visitante(Integer.parseInt(partido[1]));
+                matchRet.setPuntos_local(Integer.parseInt(partido[2]));
+                matchRet.setId(Integer.parseInt(partido[0]));
+                if (dbm.update(matchRet)){
+                    Vista.imprimirMensaje("Actualizado..");
+                }else {
+                    Vista.imprimirMensaje("No se ha podido actualizar los datos de este partido");
                 }
 
-                Vista.imprimirMensaje("Se han actualizado los datos");
-            } else {
-                throw new SQLException("No se h podido establecer la conexion");
             }
+            for (String[] jugadore : jugadores) {
+                partidoJugadores.setId_match(Integer.parseInt(jugadore[0]));
+                partidoJugadores.setId_jug(Integer.parseInt(jugadore[1]));
+                partidoJugadores.setPunts(Integer.parseInt(jugadore[2]));
+                partidoJugadores.setRebots(Integer.parseInt(jugadore[3]));
+                partidoJugadores.setAssist(Integer.parseInt(jugadore[4]));
+                if (dbp.update(partidoJugadores)){
+                    Vista.imprimirMensaje("Actualizado..");
+                }else {
+                    Vista.imprimirMensaje("No se ha podido actualizar los datos de este jugador");
+                }
+            }
+
+            Vista.imprimirMensaje("Se han actualizado los datos");
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        } catch (SQLException e){
-            Vista.imprimirMensaje(e.getMessage());
         }
 
     }

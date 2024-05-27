@@ -1,10 +1,9 @@
 package Model;
 
 import Controlador.Conexion;
-import Controlador.Controlador;
+
 import Vista.Vista;
 
-import javax.print.attribute.standard.MediaSize;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

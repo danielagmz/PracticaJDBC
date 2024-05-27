@@ -27,19 +27,6 @@ public class Vista {
        }
    }
 
-//    public static void imprimirPlayerResult(List<String> partido,List<PlayerMatches> lista){
-//        System.out.printf("%-20s%-10s%-10s%-10s","partido","Puntos","Rebotes","Asistencies");
-//        System.out.println();
-//        for (int i = 0; i < 50; i++) {
-//            System.out.print("-");
-//        }
-//        System.out.println();
-//        for (String s : partido) {
-//            for (PlayerMatches player : lista) {
-//                System.out.printf(" %-20s%-10d%-10d%-10d\n",s,player.getPunts(),player.getRebots(),player.getAssist());
-//            }
-//        }
-//    }
     public static void imprimirPlayerResult(List<String> partidos, List<PlayerMatches> lista) {
         System.out.printf("\t%-20s%-10s%-10s%-10s\n","partido","Puntos","Rebotes","Asistencies");
         for (int i = 0; i < partidos.size(); i++) {
