@@ -93,7 +93,7 @@ public class Controlador {
                     Vista.imprimirMensaje("Este jugador no existe");
                 }
             } else {
-                Vista.imprimirMensaje ("Buscando...");
+                Vista.imprimirMensaje ("Recuperando datos...");
                 jugadores=player.medianasJugadores(nom);
                 if (!jugadores.isEmpty()){
                     Vista.imprimirPlayerStats(jugadores);
@@ -461,45 +461,59 @@ public class Controlador {
         }
     }
 
-    /**
-
-     * Funcion para pedir al usuario que franquicia desea cambiar
-     */
-    public static void introducirFranquicia() {
-        String nombre = obtenerNombreValido("Que franquicia quieres cambiar (Ej: Los Angeles Lakers): ");
-        String franquicia = obtenerNombreValido("Escribe la franquicia: ");
-        cambiarFranquicia(nombre, franquicia);
-    }
-
-    /**
-     * Funcion para verificar el equipo y la franquicia
-     * @param mensaje Es el mensaje que se va a prinatr al usuario
-     * @return Retorna el nombre ya verificado
-     */
-    private static String obtenerNombreValido(String mensaje) {
-        String nombre;
-        do {
-            Vista.imprimirMensajeSeguido(mensaje);
-            nombre = scan.nextLine();
-            if (!verificarNombre(nombre)) {
-                Vista.imprimirMensaje("El nombre no es correcto");
-            }
-        } while (!verificarNombre(nombre));
-        return nombre;
-    }
 
     /**
      * Funcion para cambiar la franquicia a partir de la funcion de IntroducirFranquicia
      * @param nombre La franquicia que el usuario quiere cambiar
      * @param franquicia La nueva franquicia
      */
-    public static void cambiarFranquicia(String nombre, String franquicia){
+    public static void cambiarFranquicia(){
         int id_equipo;
         Team equipo = new Team();
         DaoTeam dbt = new DaoTeam();
-        String franquiciaNueva = franquicia.substring(0,1).toUpperCase() + franquicia.substring(1).toLowerCase();
+        String nombre,franquicia;
+        do {
+            Vista.imprimirMensajeSeguido("Que franquicia quieres cambiar (Ej: Los Angeles Lakers): ");
+            nombre = scan.nextLine();
+            if (!verificarNombre(nombre)) {
+                Vista.imprimirMensaje("El nombre no es correcto");
+            }
+        } while (!verificarNombre(nombre));
+
+        Vista.imprimirMensaje("Buscando...");
         id_equipo = Model.obtenerIdEquipoNomComplet(nombre);
-        if (id_equipo != -1){
+        if (id_equipo == -1){
+            // Si no encuntra la id del jugador busca si hay alguna similitud en la base de datos
+            Vista.imprimirMensaje ("Buscando similitudes...");
+            String opcion = buscarYSeleccionarFranquicia(nombre);
+            do {
+                Vista.imprimirMensajeSeguido("Escribe la franquicia: ");
+                franquicia = scan.nextLine();
+                if (!verificarNombre(franquicia)) {
+                    Vista.imprimirMensaje("El nombre no es correcto");
+                }
+            } while (!verificarNombre(franquicia));
+            // hacemos que la primera letra sea mayuscula
+            String franquiciaNueva = franquicia.substring(0,1).toUpperCase() + franquicia.substring(1).toLowerCase();
+            Vista.imprimirMensaje("Actualizando franquicia...");
+            equipo.setId(Model.obtenerIdEquipoNomComplet(opcion));
+            equipo=dbt.read(equipo);
+            equipo.setFranquicia(franquiciaNueva);
+            if (dbt.update(equipo)){
+                Vista.imprimirMensaje("Modificado con exito");
+            }else {
+                Vista.imprimirMensaje("No se ha podido modificar");
+            }
+        } else {
+            do {
+                Vista.imprimirMensajeSeguido("Escribe la franquicia: ");
+                franquicia = scan.nextLine();
+                if (!verificarNombre(franquicia)) {
+                    Vista.imprimirMensaje("El nombre no es correcto");
+                }
+            } while (!verificarNombre(franquicia));
+            // hacemos que la primera letra sea mayuscula
+            String franquiciaNueva = franquicia.substring(0,1).toUpperCase() + franquicia.substring(1).toLowerCase();
             Vista.imprimirMensaje("Actualizando franquicia...");
             equipo.setId(id_equipo);
             equipo=dbt.read(equipo);
@@ -509,8 +523,6 @@ public class Controlador {
             }else {
                 Vista.imprimirMensaje("No se ha podido modificar");
             }
-        } else {
-            Vista.imprimirMensaje("No se ha encontrado la franquicia");
         }
 
     }
@@ -709,6 +721,32 @@ public class Controlador {
             Vista.mostrarOpciones(variable,opciones);
             Vista.imprimirMensajeSeguido("Seleccione el número que desea:");
             int choice = utilities.introducirNumeroEntero(scan,opciones.size(),1,false);
+            if (choice > 0 && choice <= opciones.size()) {
+                String seleccion = opciones.get(choice - 1);
+                Vista.imprimirMensaje("Has seleccionado: " + seleccion);
+                return seleccion;
+            } else {
+                Vista.imprimirMensaje("Selección no válida.");
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Funcion para buscar similitudes con las franquicias
+     * @param pal_clave Palabra que servira para hacer la busqueda generica en la base de datos
+     * @return Retorna la opcion que el usuario ha escogido cuando se le muestran las similitudes
+     */
+    public static String buscarYSeleccionarFranquicia(String pal_clave) {
+        List<String> opciones = Model.buscadorFranquiciaBD(pal_clave);
+        if (opciones.isEmpty()) {
+            Vista.imprimirMensaje("No se ha encontrado una franquicia con ese nombre.");
+            return null;
+        } else {
+            Vista.mostrarOpcionesFranquicia(opciones);
+            Vista.imprimirMensajeSeguido("Seleccione el número que desea:");
+            int choice = utilities.introducirNumeroEntero(scan,opciones.size(),1,false);
+            scan.nextLine();
             if (choice > 0 && choice <= opciones.size()) {
                 String seleccion = opciones.get(choice - 1);
                 Vista.imprimirMensaje("Has seleccionado: " + seleccion);

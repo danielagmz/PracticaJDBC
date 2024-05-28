@@ -254,6 +254,27 @@ public class Model {
         }
         return selecciones;
     }
+
+    /**
+     * Funcion para buscar similitudes con la franqucia que ha insertado el usuario dentro de la base de datos
+     * @param pal_clave Palabra que servira para hacer la busqueda generica en la base de datos
+     * @return Retorna un ArrayList con todas las franquicias que tengan similitud con pal_clave
+     */
+    public static List<String> buscadorFranquiciaBD(String pal_clave) {
+        List<String> selecciones = new ArrayList<>();
+        String sql = "SELECT nom_complet FROM teams WHERE nom_complet LIKE ?";
+        try (Connection conn = Conexion.connection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + pal_clave  + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                selecciones.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            Vista.imprimirMensaje(e.getMessage());
+        }
+        return selecciones;
+    }
 }
 
 

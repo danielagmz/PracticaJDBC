@@ -122,6 +122,12 @@ public class Vista {
             System.out.println((i + 1) + ". " + jugEqup.get(i));
         }
     }
+    public static void mostrarOpcionesFranquicia(List<String> franquicias) {
+        System.out.println("Franquicias encontradas:");
+        for (int i = 0; i < franquicias.size(); i++) {
+            System.out.println((i + 1) + ". " + franquicias.get(i));
+        }
+    }
 
 }
 
