@@ -111,10 +111,15 @@ public class Vista {
        System.out.println();
    }
 
-    public static void mostrarOpciones(String variable,List<String> players) {
+    /**
+     * Funcion para imprimir las opciones de equipo o jugadores
+     * @param variable Parametro para indicar de si son jugadores o equipos
+     * @param jugEqup Le pasamos el ArrayList de los jugadores o equipos
+     */
+    public static void mostrarOpciones(String variable,List<String> jugEqup) {
         System.out.println(variable + " encontrados:");
-        for (int i = 0; i < players.size(); i++) {
-            System.out.println((i + 1) + ". " + players.get(i));
+        for (int i = 0; i < jugEqup.size(); i++) {
+            System.out.println((i + 1) + ". " + jugEqup.get(i));
         }
     }
 

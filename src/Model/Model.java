@@ -233,12 +233,18 @@ public class Model {
         return partidos;
     }
 
-    public static List<String> buscadorBD(String keyword, String tabla) {
+    /**
+     * Funcion para buscar la palabra clave que el usuario a introducido en la base de datos
+     * @param pal_clave Palabra que servira para hacer la busqueda generica en la base de datos
+     * @param tabla Tabla donde la funcion hará la select
+     * @return Retorna un ArrayList con todos los equipos o jugadores que tengan similitud con pal_clave
+     */
+    public static List<String> buscadorBD(String pal_clave , String tabla) {
         List<String> selecciones = new ArrayList<>();
         String sql = "SELECT nom FROM "+ tabla +" WHERE nom LIKE ?";
         try (Connection conn = Conexion.connection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, "%" + keyword + "%");
+            pstmt.setString(1, "%" + pal_clave  + "%");
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 selecciones.add(rs.getString(1));

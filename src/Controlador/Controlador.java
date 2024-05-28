@@ -38,6 +38,7 @@ public class Controlador {
             if (verificarNombre(nom)){
                 Vista.imprimirMensaje ("Buscando...");
                 if (Model.obtenerIdEquipo(nom) == -1) {
+                    // Si no encuntra la id del jugador busca si hay alguna similitud en la base de datos
                     Vista.imprimirMensaje ("Buscando similitudes...");
                     String opcion = buscarYSeleccionarOpcion(nom,"teams","equipos");
                     jugadores=player.listarTodos(opcion);
@@ -129,6 +130,7 @@ public class Controlador {
             if (!partits.isEmpty()){
                 Vista.impPartidosJugados(partits);
             }else{
+                //Busca si hay alguna similitud en la base de datos
                 Vista.imprimirMensaje ("Buscando similitudes...");
                 String opcion = buscarYSeleccionarOpcion(nom,"teams","equipos");
                 partits=equipo.resultPartits(opcion);
@@ -174,6 +176,7 @@ public class Controlador {
             if (verificarNombre(nom)){
                 Vista.imprimirMensaje("Comprobando nombre...");
                 if (Model.obtenerIdJugador(nom)==-1){
+                    // Si no encuntra la id del jugador busca si hay alguna similitud en la base de datos
                     nPlayer.setNom(nom);
 
                     System.out.print("Altura del jugador: ");
@@ -270,6 +273,7 @@ public class Controlador {
             // busca el jugador en la base de datos y crea un objeto con sus atributos
             int id_jugador = Model.obtenerIdJugador(nom);
             if (id_jugador == -1){
+                // Si no encuntra la id del jugador busca si hay alguna similitud en la base de datos
                 Vista.imprimirMensaje ("Buscando similitudes...");
                 String opcion = buscarYSeleccionarOpcion(nom,"players","jugadores");
                 Vista.imprimirMensaje("Recuperando datos del jugador...");
@@ -364,6 +368,7 @@ public class Controlador {
 
             Vista.imprimirMensaje("Recuperando datos...");
             if (Model.obtenerIdJugador(nom) == -1) {
+                // Si no encuntra la id del jugador busca si hay alguna similitud en la base de datos
                 Vista.imprimirMensaje("Buscando similitudes...");
                 String opcion = buscarYSeleccionarOpcion(nom, "players", "jugadores");
                 id = Model.obtenerIdJugador(opcion);
@@ -603,6 +608,7 @@ public class Controlador {
            id = Model.obtenerIdJugador(nombre);
 
            if (id == -1) {
+               // Si no encuntra la id del jugador busca si hay alguna similitud en la base de datos
                Vista.imprimirMensaje("Buscando similitudes...");
                String opcion = buscarYSeleccionarOpcion(nombre,"players","jugadores");
                Vista.imprimirMensaje("Recuperando datos...");
@@ -687,8 +693,15 @@ public class Controlador {
        }
     }
 
-    public static String buscarYSeleccionarOpcion(String keyword,String tabla,String variable) {
-        List<String> opciones = Model.buscadorBD(keyword,tabla);
+    /**
+     * Funcion para buscar un jugador o equipos similares a lo que el usuario ha introducido
+     * @param pal_clave Palabra que servira para hacer la busqueda generica en la base de datos
+     * @param tabla Tabla donde la funcion hará la select
+     * @param variable Este parametro serviara para imprimir por pantalla si es equipos o jugadores
+     * @return Retorna la opcion que el usuario ha escogido cuando se le muestran las similitudes
+     */
+    public static String buscarYSeleccionarOpcion(String pal_clave ,String tabla,String variable) {
+        List<String> opciones = Model.buscadorBD(pal_clave ,tabla);
         if (opciones.isEmpty()) {
             Vista.imprimirMensaje("No se encontraron " +variable+ " con ese nombre.");
             return null;
