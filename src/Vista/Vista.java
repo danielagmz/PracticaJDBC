@@ -110,4 +110,16 @@ public class Vista {
    public static void saltoLinea(){
        System.out.println();
    }
+
+    public static void mostrarOpciones(String variable,List<String> players) {
+        System.out.println(variable + " encontrados:");
+        for (int i = 0; i < players.size(); i++) {
+            System.out.println((i + 1) + ". " + players.get(i));
+        }
+    }
+
 }
+
+
+
+

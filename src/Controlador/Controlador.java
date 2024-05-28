@@ -28,44 +28,73 @@ public class Controlador {
     public static void listarJugadores() throws SQLException {
         String nom;
         List<Player> jugadores;
-        System.out.print("Dime un equipo: ");
-        nom = scan.nextLine();
-        Vista.imprimirMensaje ("Buscando...");
-        if (verificarNombre(nom)){
-            DaoPlayer player = new DaoPlayer();
-            jugadores=player.listarTodos(nom);
-            if (jugadores!=null){
-                Vista.imprimirPlayers(jugadores);
-            }else{
-                Vista.imprimirMensaje("Ese equipo no existe");
-                Menu.menuPrincipal();
+        DaoPlayer player = new DaoPlayer();
+        do {
+            Vista.imprimirMensaje("Dime un equipo: ");
+            nom = scan.nextLine();
+            if (verificarNombre(nom)){
+                Vista.imprimirMensaje ("Buscando...");
+                int id_equipActual = Model.obtenerIdEquipo(nom);
+                if (id_equipActual == -1) {
+                    Vista.imprimirMensaje ("Buscando similitudes...");
+                    String opcion = buscarYSeleccionarOpcion(nom,"teams","equipos");
+                    jugadores=player.listarTodos(opcion);
+                    if (jugadores!=null){
+                        Vista.imprimirPlayers(jugadores);
+                    }else{
+                        Vista.imprimirMensaje("Ese equipo no existe");
+                    }
+                } else {
+                    Vista.imprimirMensaje ("Buscando...");
+                    jugadores=player.listarTodos(nom);
+                    if (jugadores!=null){
+                        Vista.imprimirPlayers(jugadores);
+                    }else{
+                        Vista.imprimirMensaje("Ese equipo no existe");
+                    }
+                }
+            } else {
+                Vista.imprimirMensaje("El nombre no es correcto");
             }
+        } while (!verificarNombre(nom));
 
-        } else {
-            Vista.imprimirMensaje("El nombre no es correcto");
-        }
     }
 
     /**
      * Muestra las estadisticas de un jugador que se introduzca, siemrpe que sea correcto dicho jugador
      */
-    public static void medianaJugador(){
+    public static void medianaJugador() throws SQLException {
         String nom;
         List<Players_stats> jugadores;
-        Vista.imprimirMensajeSeguido ("Dime un nombre de un jugador: ");
-        nom = scan.nextLine();
-        Vista.imprimirMensaje ("Buscando...");
-        if (verificarNombre(nom)){
-            DaoPlayer player = new DaoPlayer();
-            jugadores=player.MedianasJugadores(nom);
-            if (!jugadores.isEmpty()){
-                Vista.imprimirPlayerStats(jugadores);
-            }else{
-                Vista.imprimirMensaje("Este jugador no existe");
+        DaoPlayer player = new DaoPlayer();
+        do {
+            Vista.imprimirMensajeSeguido ("Dime un nombre de un jugador: ");
+            nom = scan.nextLine();
+            if (verificarNombre(nom)){
+                Vista.imprimirMensaje ("Buscando...");
+                int id_jugador = Model.obtenerIdJugador(nom);
+                if (id_jugador == -1){
+                    Vista.imprimirMensaje ("Buscando similitudes...");
+                    String selectedPlayer = buscarYSeleccionarOpcion(nom,"players","jugador");
+                    jugadores=player.medianasJugadores(selectedPlayer);
+                    if (jugadores!=null){
+                        Vista.imprimirPlayerStats(jugadores);
+                    }else{
+                        Vista.imprimirMensaje("Este jugador no existe");
+                    }
+                } else {
+                    Vista.imprimirMensaje ("Buscando...");
+                    jugadores=player.medianasJugadores(nom);
+                    if (!jugadores.isEmpty()){
+                        Vista.imprimirPlayerStats(jugadores);
+                    }else{
+                        Vista.imprimirMensaje("Este jugador no existe");
+                    }
+                }
+            } else {
+                Vista.imprimirMensaje("El nombre no es correcto");
             }
-        } else {
-            Vista.imprimirMensaje("El nombre no es correcto");
-        }
+        } while (!verificarNombre(nom));
     }
 
     /**
@@ -74,25 +103,33 @@ public class Controlador {
     public static void resultadosPartidos(){
         String nom;
         List<String> partits;
+        DaoMatch equipo = new DaoMatch();
+        do {
+            System.out.print("Dime un equipo: ");
+            nom = scan.nextLine();
+            if (verificarNombre(nom)){
+                // leer los resultados de un partido usando la funcion de model que retorna una lista con ellos
+                Vista.imprimirMensaje("Buscando...");
+                partits=equipo.resultPartits(nom);
+                // si no hay elementos en la lista partits quiere decir que no hay partidos de ese equipo y/o que no existe
+                if (!partits.isEmpty()){
+                    Vista.impPartidosJugados(partits);
+                }else{
+                    Vista.imprimirMensaje ("Buscando similitudes...");
+                    String selectedPlayer = buscarYSeleccionarOpcion(nom,"teams","equipos");
+                    partits=equipo.resultPartits(selectedPlayer);
+                    if (partits!=null){
+                        Vista.impPartidosJugados(partits);
+                    }else{
+                        Vista.imprimirMensaje("No se han encontrado resultados");
+                    }
+                }
 
-        System.out.print("Dime un equipo: ");
-        nom = scan.nextLine();
-        Vista.imprimirMensaje("Buscando...");
-
-        if (verificarNombre(nom)){
-            // leer los resultados de un partido usando la funcion de model que retorna una lista con ellos
-            DaoMatch equipo = new DaoMatch();
-            partits=equipo.ResultPartits(nom);
-            // si no hay elementos en la lista partits quiere decir que no hay partidos de ese equipo y/o que no existe
-            if (!partits.isEmpty()){
-                Vista.impPartidosJugados(partits);
-            }else{
-                Vista.imprimirMensaje("No se han encontrado resultados");
+            } else {
+                Vista.imprimirMensaje("El nombre no es correcto");
             }
+        } while (!verificarNombre(nom));
 
-        } else {
-            Vista.imprimirMensaje("El nombre no es correcto");
-        }
     }
 
     /**
@@ -433,10 +470,8 @@ public class Controlador {
                 }
             }
             Vista.imprimirMensaje("Se han actualizado los datos");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException | SQLException e) {
+            Vista.imprimirMensaje(e.getMessage());
         }
 
     }
@@ -506,6 +541,26 @@ public class Controlador {
             }
         } else {
             throw new SQLException("Este jugador no existe");
+        }
+    }
+
+    public static String buscarYSeleccionarOpcion(String keyword,String tabla,String variable) {
+        List<String> opciones = Model.buscadorBD(keyword,tabla);
+        if (opciones.isEmpty()) {
+            Vista.imprimirMensaje("No se encontraron " +variable+ " con ese nombre.");
+            return null;
+        } else {
+            Vista.mostrarOpciones(variable,opciones);
+            Vista.imprimirMensaje("Seleccione el número que desea:");
+            int choice = utilities.introducirNumeroEntero(scan,opciones.size(),1,false);
+            if (choice > 0 && choice <= opciones.size()) {
+                String seleccion = opciones.get(choice - 1);
+                Vista.imprimirMensaje("Has seleccionado: " + seleccion);
+                return seleccion;
+            } else {
+                Vista.imprimirMensaje("Selección no válida.");
+                return null;
+            }
         }
     }
 

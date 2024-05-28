@@ -134,7 +134,7 @@ public class DaoMatch implements DAODB<Match>{
         return false;
     }
 
-    public List<String> ResultPartits(String nom){
+    public List<String> resultPartits(String nom){
         List<String> partidos = new ArrayList<>();
         Connection con = null;
         PreparedStatement smt = null;
