@@ -1,7 +1,6 @@
 package Model;
 
 import Controlador.Conexion;
-
 import Vista.Vista;
 
 import java.sql.Connection;
@@ -12,7 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-
+    /**
+     * funcion que se conecta a la bd y obtiene el id del equipo a partir del nombre
+     * @param nombre nombre del equipo
+     * @return retorna -1 si no se encuentra el equipo en cuestion
+     * @throws SQLException si ha habido un error con la conexion en la bd retorna un error personalizado
+     */
     public static int obtenerIdEquipo(String nombre) throws SQLException {
         int id_equipo = -1;
 
@@ -39,6 +43,13 @@ public class Model {
         // retorna menos uno si no se encuentran registros
         return id_equipo;
     }
+
+    /**
+     * funcion que se conecta a la bd y obtiene el id de un jugador a partir de su nombre
+     * @param nombre nombre del jugador
+     * @return retorna -1 si no se encuentra o el id si si
+     * @throws SQLException lana un error personalzado si no se puede conectar a la BD
+     */
 
     public static int obtenerIdJugador(String nombre) throws SQLException {
         int id_jug = -1;
@@ -67,6 +78,12 @@ public class Model {
         return id_jug;
     }
 
+    /**
+     * funcion inversa a la de obtener el id de un equipo
+     * @param id id del equipo
+     * @return retorna el nombre del equipo o null si no se encuentra
+     * @throws SQLException lanza una excepcion personalizada si no se puede conectar
+     */
     public static String obtenerNombreEquipo(int id) throws SQLException {
         String nombre = null;
         Connection con = null;
@@ -118,6 +135,11 @@ public class Model {
     }
 
 
+    /**
+     * funcion que retorna los datos de la tabla de player-matches
+     * @param nombre indica el nombre del jugador cuyos datos seran buscados
+     * @return retona la lista de los partidos que ha jugado ese jugador concreto
+     */
     public static List<PlayerMatches> obtenerResultPartidos(String nombre) {
         Connection con = null;
         PreparedStatement smt = null;
@@ -129,13 +151,13 @@ public class Model {
             if (con != null) {
                 smt = con.prepareStatement("SELECT id_match,punts,rebots,assistencies FROM players_matches WHERE id_jugador=?");
                 smt.setInt(1, id_jugador);
-                ResultSet jugadors = smt.executeQuery();
-                while (jugadors.next()) {
+                ResultSet resultado = smt.executeQuery();
+                while (resultado.next()) {
                     PlayerMatches p = new PlayerMatches();
-                    p.setId_match(jugadors.getInt(1));
-                    p.setPunts(jugadors.getInt(2));
-                    p.setRebots(jugadors.getInt(3));
-                    p.setAssist(jugadors.getInt(4));
+                    p.setId_match(resultado.getInt(1));
+                    p.setPunts(resultado.getInt(2));
+                    p.setRebots(resultado.getInt(3));
+                    p.setAssist(resultado.getInt(4));
                     resultados.add(p);
                 }
 
@@ -152,7 +174,12 @@ public class Model {
       return resultados;
     }
 
-
+    /**
+     * Obtiene los partidos en un formato concreto haciendo uso de un procedure en la BD
+     * este procedure hace un select concat de cada partido-jugador ex -> lakers-nets
+     * @param id_jugador indica el id del jugador cuyos partidos seran obtenidos
+     * @return retorna una lista de stings con el concat de cada partido [visitante-local,visitante-local...]
+     */
     public static List<String> obtenerPartidos(int id_jugador){
         List<String> partidos = new ArrayList<>();
         Connection con;
@@ -164,6 +191,7 @@ public class Model {
                 smt.setInt(1,id_jugador);
                 ResultSet partido = smt.executeQuery();
                 while (partido.next()){
+                    //  en una columna visitante-local
                     String col1 = partido.getString(1);
                     partidos.add(col1);
                 }

@@ -1,7 +1,6 @@
 package Model.Dao;
 
 import Controlador.Conexion;
-import Model.Player;
 import Model.Players_stats;
 
 import java.sql.Connection;

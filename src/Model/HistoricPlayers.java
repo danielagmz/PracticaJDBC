@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * clase de objetos para la tabla de historico de jugadores
+ */
 public class HistoricPlayers {
     private int id_jugador;
     private  float punts;

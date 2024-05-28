@@ -1,23 +1,15 @@
 package Controlador;
 
 import Model.Dao.*;
-import Model.Model;
-import Model.Player;
+import Model.*;
 import Vista.Vista;
 import megaLibreria.utilities;
-import Model.HistoricPlayers;
-import Model.Players_stats;
-import Model.PlayerMatches;
-import Model.Match;
-import Model.Team;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.List;
-
 import java.util.ArrayList;
-
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -91,7 +83,7 @@ public class Controlador {
             // leer los resultados de un partido usando la funcion de model que retorna una lista con ellos
             DaoMatch equipo = new DaoMatch();
             partits=equipo.ResultPartits(nom);
-            // si no hay elementos en la lista quiere decir que no hay partidos de ese equipo y/o que no existe
+            // si no hay elementos en la lista partits quiere decir que no hay partidos de ese equipo y/o que no existe
             if (!partits.isEmpty()){
                 Vista.impPartidosJugados(partits);
             }else{
@@ -327,6 +319,7 @@ public class Controlador {
     }
 
     /**
+
      * Funcion para pedir al usuario que franquicia desea cambiar
      */
     public static void introducirFranquicia() {
@@ -442,10 +435,11 @@ public class Controlador {
     }
 
     /**
-     * Funcion para modificar las estadisticas del jugador solicitado
-     * @throws SQLException Si no encuentra el id del jugador lanza un error
+     * Modifica las estadisticas de un jugador en un partido concreto
+     * @throws SQLException lanza una excepcion personalizada si no se puede encontrar un jugador o si
+     * no hay estadisticas que mostrar de un jugador
      */
-    public static void modifcarEstadisticas() throws SQLException {
+    public static void modificarEstadisticas() throws SQLException {
         List<String> partidos;
         String nombre;
         int id,partido,puntos,rebotes,asis,id_partido;
@@ -453,6 +447,7 @@ public class Controlador {
 
         PlayerMatches pm = new PlayerMatches();
         DaoPlayerMatches dbm = new DaoPlayerMatches();
+
 
         do {
             Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");

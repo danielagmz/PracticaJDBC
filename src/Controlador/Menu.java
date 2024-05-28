@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 
 public class Menu {
+    // scanner global para los dos menu
     static Scanner scan = new Scanner(System.in);
     public static void menuPrincipal() throws SQLException {
         int opcio;
@@ -31,7 +32,7 @@ public class Menu {
             Vista.imprimirMensajeSeguido("> ");
             // funcion que se encarga de preguntar la opcion hasta que este en un rango valido
             opcio= utilities.introducirNumeroEntero(scan, 9, 0, false);
-
+            scan.nextLine();
             switch (opcio){
                 case 1:
                     Controlador.listarJugadores();
@@ -52,7 +53,7 @@ public class Menu {
                     Controlador.actualizarDatos();
                     break;
                 case 7:
-                    Controlador.modifcarEstadisticas();
+                    Controlador.modificarEstadisticas();
                      break;
                 case 8:
                     Controlador.retirarJugador();
@@ -70,9 +71,16 @@ public class Menu {
 
 
     }
+
+    /**
+     * funcion que genera un menu con un formato especifico
+     * @param texto indica el titulo del menu
+     * @param opciones array de las opciones que se veran en el menu
+     * @return retorna la opcion seleccionada luego de verificar que sea valida
+     */
     public static int confirmMenu(String texto,String[] opciones){
         int opcio;
-
+        // utiliza funciones de "libreriaCustom" para mostrar y formatear el menu
             utilities.menu(texto, opciones);
             Vista.imprimirMensajeSeguido("> ");
             opcio = utilities.introducirNumeroEntero(scan, opciones.length,0,false);
