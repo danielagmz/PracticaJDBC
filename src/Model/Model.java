@@ -234,19 +234,19 @@ public class Model {
     }
 
     public static List<String> buscadorBD(String keyword, String tabla) {
-        List<String> players = new ArrayList<>();
+        List<String> selecciones = new ArrayList<>();
         String sql = "SELECT nom FROM "+ tabla +" WHERE nom LIKE ?";
         try (Connection conn = Conexion.connection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + keyword + "%");
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                players.add(rs.getString(1));
+                selecciones.add(rs.getString(1));
             }
         } catch (SQLException e) {
             Vista.imprimirMensaje(e.getMessage());
         }
-        return players;
+        return selecciones;
     }
 }
 

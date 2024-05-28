@@ -29,13 +29,15 @@ public class Controlador {
         String nom;
         List<Player> jugadores;
         DaoPlayer player = new DaoPlayer();
-        do {
-            Vista.imprimirMensaje("Dime un equipo: ");
-            nom = scan.nextLine();
+        try {
+            do {
+                Vista.imprimirMensaje("Dime un equipo: ");
+                nom = scan.nextLine();
+            } while (!verificarNombre(nom));
+
             if (verificarNombre(nom)){
                 Vista.imprimirMensaje ("Buscando...");
-                int id_equipActual = Model.obtenerIdEquipo(nom);
-                if (id_equipActual == -1) {
+                if (Model.obtenerIdEquipo(nom) == -1) {
                     Vista.imprimirMensaje ("Buscando similitudes...");
                     String opcion = buscarYSeleccionarOpcion(nom,"teams","equipos");
                     jugadores=player.listarTodos(opcion);
@@ -56,7 +58,10 @@ public class Controlador {
             } else {
                 Vista.imprimirMensaje("El nombre no es correcto");
             }
-        } while (!verificarNombre(nom));
+
+        } catch (IllegalArgumentException e){
+            Vista.imprimirMensaje(e.getMessage());
+        }
 
     }
 
@@ -67,34 +72,38 @@ public class Controlador {
         String nom;
         List<Players_stats> jugadores;
         DaoPlayer player = new DaoPlayer();
-        do {
-            Vista.imprimirMensajeSeguido ("Dime un nombre de un jugador: ");
-            nom = scan.nextLine();
-            if (verificarNombre(nom)){
-                Vista.imprimirMensaje ("Buscando...");
-                int id_jugador = Model.obtenerIdJugador(nom);
-                if (id_jugador == -1){
-                    Vista.imprimirMensaje ("Buscando similitudes...");
-                    String selectedPlayer = buscarYSeleccionarOpcion(nom,"players","jugador");
-                    jugadores=player.medianasJugadores(selectedPlayer);
-                    if (jugadores!=null){
-                        Vista.imprimirPlayerStats(jugadores);
-                    }else{
-                        Vista.imprimirMensaje("Este jugador no existe");
-                    }
-                } else {
-                    Vista.imprimirMensaje ("Buscando...");
-                    jugadores=player.medianasJugadores(nom);
-                    if (!jugadores.isEmpty()){
-                        Vista.imprimirPlayerStats(jugadores);
-                    }else{
-                        Vista.imprimirMensaje("Este jugador no existe");
-                    }
+        try {
+            do {
+                Vista.imprimirMensajeSeguido ("Dime un nombre de un jugador: ");
+                nom = scan.nextLine();
+                if (!verificarNombre(nom)){
+                    Vista.imprimirMensaje("No se han encontrado resultados");
+                }
+            } while (!verificarNombre(nom));
+
+            Vista.imprimirMensaje ("Buscando...");
+            if (Model.obtenerIdJugador(nom) == -1){
+                Vista.imprimirMensaje ("Buscando similitudes...");
+                String opcion = buscarYSeleccionarOpcion(nom,"players","jugador");
+                jugadores=player.medianasJugadores(opcion);
+                if (jugadores!=null){
+                    Vista.imprimirPlayerStats(jugadores);
+                }else{
+                    Vista.imprimirMensaje("Este jugador no existe");
                 }
             } else {
-                Vista.imprimirMensaje("El nombre no es correcto");
+                Vista.imprimirMensaje ("Buscando...");
+                jugadores=player.medianasJugadores(nom);
+                if (!jugadores.isEmpty()){
+                    Vista.imprimirPlayerStats(jugadores);
+                }else{
+                    Vista.imprimirMensaje("Este jugador no existe");
+                }
             }
-        } while (!verificarNombre(nom));
+
+        }catch (IllegalArgumentException e){
+            Vista.imprimirMensaje(e.getMessage());
+        }
     }
 
     /**
@@ -104,31 +113,32 @@ public class Controlador {
         String nom;
         List<String> partits;
         DaoMatch equipo = new DaoMatch();
-        do {
-            System.out.print("Dime un equipo: ");
-            nom = scan.nextLine();
-            if (verificarNombre(nom)){
-                // leer los resultados de un partido usando la funcion de model que retorna una lista con ellos
-                Vista.imprimirMensaje("Buscando...");
-                partits=equipo.resultPartits(nom);
-                // si no hay elementos en la lista partits quiere decir que no hay partidos de ese equipo y/o que no existe
-                if (!partits.isEmpty()){
-                    Vista.impPartidosJugados(partits);
-                }else{
-                    Vista.imprimirMensaje ("Buscando similitudes...");
-                    String selectedPlayer = buscarYSeleccionarOpcion(nom,"teams","equipos");
-                    partits=equipo.resultPartits(selectedPlayer);
-                    if (partits!=null){
-                        Vista.impPartidosJugados(partits);
-                    }else{
-                        Vista.imprimirMensaje("No se han encontrado resultados");
-                    }
+        try {
+            do {
+                System.out.print("Dime un equipo: ");
+                nom = scan.nextLine();
+                if (!verificarNombre(nom)){
+                    Vista.imprimirMensaje("No se han encontrado resultados");
                 }
+            } while (!verificarNombre(nom));
 
-            } else {
-                Vista.imprimirMensaje("El nombre no es correcto");
+            // leer los resultados de un partido usando la funcion de model que retorna una lista con ellos
+            Vista.imprimirMensaje("Buscando...");
+            partits=equipo.resultPartits(nom);
+            // si no hay elementos en la lista partits quiere decir que no hay partidos de ese equipo y/o que no existe
+            if (!partits.isEmpty()){
+                Vista.impPartidosJugados(partits);
+            }else{
+                Vista.imprimirMensaje ("Buscando similitudes...");
+                String opcion = buscarYSeleccionarOpcion(nom,"teams","equipos");
+                partits=equipo.resultPartits(opcion);
+                if (partits!=null){
+                    Vista.impPartidosJugados(partits);
+                }
             }
-        } while (!verificarNombre(nom));
+        } catch (IllegalArgumentException e){
+            Vista.imprimirMensaje(e.getMessage());
+        }
 
     }
 
@@ -240,8 +250,14 @@ public class Controlador {
 
         // si el parametro es true quiere decir que viene desde la funcion de InsertarJugador
         if (!traspas_equip) {
-            Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");
-            nom = scan.nextLine();
+            do {
+                Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");
+                nom = scan.nextLine();
+                if (!verificarNombre(nom)){
+                    Vista.imprimirMensaje("El nombre no es correcto");
+                }
+            } while (!verificarNombre(nom));
+
             Vista.imprimirMensaje ("Buscando...");
         }else{
             Vista.imprimirMensajeSeguido("Confirma el nombre: ");
@@ -252,39 +268,76 @@ public class Controlador {
 
         if (verificarNombre(nom)){
             // busca el jugador en la base de datos y crea un objeto con sus atributos
-            player.setId(Model.obtenerIdJugador(nom));
-            player=db.read(player);
-            Vista.mostrarGenerico(player,true);
-            Vista.saltoLinea();
-            // menu para confirmar que se traspasa el jugador correcto
-            // 1 proceso de traspaso, 2 introducir de vuelta un nuevo jugador y 3 salir
-            switch (Menu.confirmMenu("És aquest el jugador?",opt)){
-                case 1:
-                    Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                    // todo verificar el nombre
-                    equipN=scan.nextLine();
-                    Vista.imprimirMensaje("Buscando equipo...");
-                    equipo_nuevo= Model.obtenerIdEquipo(equipN);
-                    Vista.imprimirMensaje("traspasando jugador ...");
-                    player.setEquip_actual(equipo_nuevo);
-                    // si se ha podido modificar se avisa al usuario
-                    if(db.update(player)){
-                        Vista.imprimirMensaje("Traspasado correctamente");
-                    }else {
-                        Vista.imprimirMensaje("Ha habido un error en el traspaso");
-                    }
-                    break;
-                case 2:
-                    traspas(false);
-                    break;
+            int id_jugador = Model.obtenerIdJugador(nom);
+            if (id_jugador == -1){
+                Vista.imprimirMensaje ("Buscando similitudes...");
+                String opcion = buscarYSeleccionarOpcion(nom,"players","jugadores");
+                Vista.imprimirMensaje("Recuperando datos del jugador...");
+                player.setId(Model.obtenerIdJugador(opcion));
+                player=db.read(player);
+                Vista.mostrarGenerico(player,true);
+                Vista.saltoLinea();
+                switch (Menu.confirmMenu("És aquest el jugador?",opt)){
+                    case 1:
+                        Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
+                        // todo verificar el nombre
+                        equipN=scan.nextLine();
+                        Vista.imprimirMensaje("Buscando equipo...");
+                        equipo_nuevo= Model.obtenerIdEquipo(equipN);
+                        Vista.imprimirMensaje("traspasando jugador ...");
+                        player.setEquip_actual(equipo_nuevo);
+                        // si se ha podido modificar se avisa al usuario
+                        if(db.update(player)){
+                            Vista.imprimirMensaje("Traspasado correctamente");
+                        }else {
+                            Vista.imprimirMensaje("Ha habido un error en el traspaso");
+                        }
+                        break;
+                    case 2:
+                        traspas(false);
+                        break;
 
-                default:
-                    Menu.menuPrincipal();
+                    default:
+                        Menu.menuPrincipal();
+                }
+            } else {
+                Vista.imprimirMensaje("Recuperando datos del jugador...");
+                player.setId(id_jugador);
+                player = db.read(player);
+                Vista.mostrarGenerico(player, true);
+                Vista.saltoLinea();
+                // menu para confirmar que se traspasa el jugador correcto
+                // 1 proceso de traspaso, 2 introducir de vuelta un nuevo jugador y 3 salir
+                switch (Menu.confirmMenu("És aquest el jugador?", opt)) {
+                    case 1:
+                        Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
+                        // todo verificar el nombre
+                        equipN = scan.nextLine();
+                        Vista.imprimirMensaje("Buscando equipo...");
+                        equipo_nuevo = Model.obtenerIdEquipo(equipN);
+                        Vista.imprimirMensaje("traspasando jugador ...");
+                        player.setEquip_actual(equipo_nuevo);
+                        // si se ha podido modificar se avisa al usuario
+                        if (db.update(player)) {
+                            Vista.imprimirMensaje("Traspasado correctamente");
+                        } else {
+                            Vista.imprimirMensaje("Ha habido un error en el traspaso");
+                        }
+                        break;
+                    case 2:
+                        traspas(false);
+                        break;
+
+                    default:
+                        Menu.menuPrincipal();
+                }
             }
         } else {
             throw new IllegalArgumentException("El nombre no es correcto");
         }
+
     }
+
 
     public static void retirarJugador() throws SQLException {
         String nom;
@@ -300,59 +353,107 @@ public class Controlador {
         DaoPlayerStats dbs= new DaoPlayerStats();
         // tabla para guardar las estadisticas del jugador retirado
         DaoHistoricPlayers db=new DaoHistoricPlayers();
+        try {
+            do {
+                Vista.imprimirMensajeSeguido("Introduce el jugador que quieres retirar: ");
+                nom=scan.nextLine().trim();
+                if (!verificarNombre(nom)){
+                    Vista.imprimirMensaje("El nombre no es correcto");
+                }
+            } while (!verificarNombre(nom));
 
-
-        Vista.imprimirMensajeSeguido("Introduce el jugador que quieres retirar: ");
-        nom=scan.nextLine().trim();
-
-        if (verificarNombre(nom)){
             Vista.imprimirMensaje("Recuperando datos...");
-            //a partir del id, leer y guardar un objeto de player y un objeto de stats
-            id=Model.obtenerIdJugador(nom);
+            if (Model.obtenerIdJugador(nom) == -1) {
+                Vista.imprimirMensaje("Buscando similitudes...");
+                String opcion = buscarYSeleccionarOpcion(nom, "players", "jugadores");
+                id = Model.obtenerIdJugador(opcion);
+                playerRet.setId(id);
+                ps.setId_jugador(id);
 
-            playerRet.setId(id);
-            ps.setId_jugador(id);
+                playerRet = dbp.read(playerRet);  // datos basicos del jugador nombre,peso,altura
+                ps = dbs.read(ps);        // stats del jugador
 
-            playerRet=dbp.read(playerRet);  // datos basicos del jugador nombre,peso,altura
-            ps=dbs.read(ps);        // stats del jugador
+                Vista.mostrarGenerico(playerRet, true);
+                Vista.saltoLinea();
+                // corfimacion de que el jugador es correcto
+                // 1 proceso de retirar, 2 vuelta a preguntar un jugador y 3 o cualquier numero mas menu principal
+                switch (Menu.confirmMenu("es este el jugador que quieres retirar?", opt)) {
+                    case 1:
+                        // solo se hace el proceso si hay un jugador que retirar
+                        if (ps != null && playerRet != null) {
+                            Vista.imprimirMensaje("Retirando jugador...");
+                            //Acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
+                            nom_equip = Model.obtenerNombreEquipo(playerRet.getEquip_actual());
+                            retirado = // ↓ id_jugador,puntos,rebotes,asistencias y nombre del equipo (campos de la tabla historico) ↓
+                                    new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(), ps.getAvg_asistencias(), nom_equip);
+                            // una vez creada la entrada en la tabla de historico, eliminar el jugador de players y por si el trigger no
+                            // funcionase tambien eliminar de player stats
+                            if (db.create(retirado)) {
+                                dbs.delete(ps);
+                                dbp.delete(playerRet);
+                                Vista.imprimirMensaje("Jugador retirado con exito!");
+                            }
+                        } else {
+                            // si por cualquier otra cosa hubiese algun otro problema para encontrar el jugador, ser le vuelve a preguntar
+                            Vista.imprimirMensaje("Ha habido un problema al recuperar los datos de este jugador");
+                            Vista.imprimirMensaje("Intentalo de nuevo");
 
-            Vista.mostrarGenerico(playerRet,true);
-            Vista.saltoLinea();
-            // corfimacion de que el jugador es correcto
-            // 1 proceso de retirar, 2 vuelta a preguntar un jugador y 3 o cualquier numero mas menu principal
-            switch (Menu.confirmMenu("es este el jugador que quieres retirar?",opt)){
-                case 1:
-                    // solo se hace el proceso si hay un jugador que retirar
-                    if (ps != null && playerRet!=null){
-                        Vista.imprimirMensaje("Retirando jugador...");
-                        //Acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
-                        nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
-                        retirado= // ↓ id_jugador,puntos,rebotes,asistencias y nombre del equipo (campos de la tabla historico) ↓
-                        new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(),ps.getAvg_asistencias(),nom_equip);
-                        // una vez creada la entrada en la tabla de historico, eliminar el jugador de players y por si el trigger no
-                        // funcionase tambien eliminar de player stats
-                        if (db.create(retirado)){
-                            dbs.delete(ps);
-                            dbp.delete(playerRet);
-                            Vista.imprimirMensaje("Jugador retirado con exito!");
+                            retirarJugador();
                         }
-                    }else{
-                        // si por cualquier otra cosa hubiese algun otro problema para encontrar el jugador, ser le vuelve a preguntar
-                        Vista.imprimirMensaje("Ha habido un problema al recuperar los datos de este jugador");
-                        Vista.imprimirMensaje("Intentalo de nuevo");
-
+                    case 2:
                         retirarJugador();
-                    }
-                case 2:
-                    retirarJugador();
 
-                default:
-                    Menu.menuPrincipal();
+                    default:
+                        Menu.menuPrincipal();
+                }
+            } else {
+                //a partir del id, leer y guardar un objeto de player y un objeto de stats
+                id = Model.obtenerIdJugador(nom);
+
+                playerRet.setId(id);
+                ps.setId_jugador(id);
+
+                playerRet = dbp.read(playerRet);  // datos basicos del jugador nombre,peso,altura
+                ps = dbs.read(ps);        // stats del jugador
+
+                Vista.mostrarGenerico(playerRet, true);
+                Vista.saltoLinea();
+                // corfimacion de que el jugador es correcto
+                // 1 proceso de retirar, 2 vuelta a preguntar un jugador y 3 o cualquier numero mas menu principal
+                switch (Menu.confirmMenu("es este el jugador que quieres retirar?", opt)) {
+                    case 1:
+                        // solo se hace el proceso si hay un jugador que retirar
+                        if (ps != null && playerRet != null) {
+                            Vista.imprimirMensaje("Retirando jugador...");
+                            //Acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
+                            nom_equip = Model.obtenerNombreEquipo(playerRet.getEquip_actual());
+                            retirado = // ↓ id_jugador,puntos,rebotes,asistencias y nombre del equipo (campos de la tabla historico) ↓
+                                    new HistoricPlayers(playerRet.getId(), ps.getAvg_puntos(), ps.getAvg_rebotes(), ps.getAvg_asistencias(), nom_equip);
+                            // una vez creada la entrada en la tabla de historico, eliminar el jugador de players y por si el trigger no
+                            // funcionase tambien eliminar de player stats
+                            if (db.create(retirado)) {
+                                dbs.delete(ps);
+                                dbp.delete(playerRet);
+                                Vista.imprimirMensaje("Jugador retirado con exito!");
+                            }
+                        } else {
+                            // si por cualquier otra cosa hubiese algun otro problema para encontrar el jugador, ser le vuelve a preguntar
+                            Vista.imprimirMensaje("Ha habido un problema al recuperar los datos de este jugador");
+                            Vista.imprimirMensaje("Intentalo de nuevo");
+
+                            retirarJugador();
+                        }
+                    case 2:
+                        retirarJugador();
+
+                    default:
+                        Menu.menuPrincipal();
+                }
             }
 
-
+        } catch (IllegalArgumentException e){
+            Vista.imprimirMensaje(e.getMessage());
         }
-
     }
 
     /**
@@ -490,58 +591,100 @@ public class Controlador {
         PlayerMatches pm = new PlayerMatches();
         DaoPlayerMatches dbm = new DaoPlayerMatches();
 
+       try {
+           do {
+               Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");
+               nombre = scan.nextLine();
+               if (!verificarNombre(nombre)) {
+                   Vista.imprimirMensaje("El nombre no es correcto");
+               }
+           } while (!verificarNombre(nombre));
+           Vista.imprimirMensaje("Buscando resultados..");
+           id = Model.obtenerIdJugador(nombre);
 
-        do {
-            Vista.imprimirMensajeSeguido("Dime el nombre de un jugador: ");
-            nombre = scan.nextLine();
-            if (!verificarNombre(nombre)) {
-                Vista.imprimirMensaje("El nombre no es correcto");
-            }
-        } while (!verificarNombre(nombre));
-        Vista.imprimirMensaje("Buscando resultados..");
-        id = Model.obtenerIdJugador(nombre);
+           if (id == -1) {
+               Vista.imprimirMensaje("Buscando similitudes...");
+               String opcion = buscarYSeleccionarOpcion(nombre,"players","jugadores");
+               Vista.imprimirMensaje("Recuperando datos...");
+               id = Model.obtenerIdJugador(opcion);
+               pm.setId_jug(id);
+               partidos = Model.obtenerPartidos(id);
+               partidosResult = Model.obtenerResultPartidos(opcion);
 
-        if (id!=-1) {
-            pm.setId_jug(id);
+               if (!partidosResult.isEmpty() && !partidos.isEmpty()){
+                   Vista.imprimirPlayerResult(partidos,partidosResult);
+                   Vista.imprimirMensajeSeguido("Que partido quieres modificar: ");
+                   partido = utilities.introducirNumeroEntero(scan,partidosResult.size(),1,false);
 
-            partidos = Model.obtenerPartidos(id);
-            partidosResult = Model.obtenerResultPartidos(nombre);
-
-            if (!partidosResult.isEmpty() && !partidos.isEmpty()){
-                Vista.imprimirPlayerResult(partidos,partidosResult);
-                Vista.imprimirMensajeSeguido("Que partido quieres modificar: ");
-                partido = utilities.introducirNumeroEntero(scan,partidosResult.size(),1,false);
-
-                id_partido = partidosResult.get(partido-1).getId_match();
-                pm.setId_match(id_partido);
-                    Vista.imprimirMensajeSeguido("Puntos: ");
-                    puntos = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
-                    pm.setPunts(puntos);
-
-
-                    Vista.imprimirMensajeSeguido("Rebotes: ");
-                    rebotes = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
-                    pm.setRebots(rebotes);
+                   id_partido = partidosResult.get(partido-1).getId_match();
+                   pm.setId_match(id_partido);
+                   Vista.imprimirMensajeSeguido("Puntos: ");
+                   puntos = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+                   pm.setPunts(puntos);
 
 
-                    Vista.imprimirMensajeSeguido("Asistencias: ");
-                    asis = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
-                    pm.setAssist(asis);
+                   Vista.imprimirMensajeSeguido("Rebotes: ");
+                   rebotes = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+                   pm.setRebots(rebotes);
 
 
-                    Vista.imprimirMensaje("Modificando...");
-                    if(dbm.update(pm) ){
-                        Vista.imprimirMensaje("Modificado con exito");
-                    }else {
-                     Vista.imprimirMensaje("no se ha podido modificar");
-                    }
+                   Vista.imprimirMensajeSeguido("Asistencias: ");
+                   asis = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+                   pm.setAssist(asis);
 
-            }else{
-                throw new SQLException("No se han encontrado resultados");
-            }
-        } else {
-            throw new SQLException("Este jugador no existe");
-        }
+
+                   Vista.imprimirMensaje("Modificando...");
+                   if(dbm.update(pm) ){
+                       Vista.imprimirMensaje("Modificado con exito");
+                   }else {
+                       Vista.imprimirMensaje("no se ha podido modificar");
+                   }
+
+               }else{
+                   throw new SQLException("No se han encontrado resultados");
+               }
+           } else {
+               Vista.imprimirMensaje("Recuperando datos...");
+               pm.setId_jug(id);
+               partidos = Model.obtenerPartidos(id);
+               partidosResult = Model.obtenerResultPartidos(nombre);
+
+               if (!partidosResult.isEmpty() && !partidos.isEmpty()){
+                   Vista.imprimirPlayerResult(partidos,partidosResult);
+                   Vista.imprimirMensajeSeguido("Que partido quieres modificar: ");
+                   partido = utilities.introducirNumeroEntero(scan,partidosResult.size(),1,false);
+
+                   id_partido = partidosResult.get(partido-1).getId_match();
+                   pm.setId_match(id_partido);
+                   Vista.imprimirMensajeSeguido("Puntos: ");
+                   puntos = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+                   pm.setPunts(puntos);
+
+
+                   Vista.imprimirMensajeSeguido("Rebotes: ");
+                   rebotes = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+                   pm.setRebots(rebotes);
+
+
+                   Vista.imprimirMensajeSeguido("Asistencias: ");
+                   asis = utilities.introducirNumeroEntero(scan,Integer.MAX_VALUE,0,false);
+                   pm.setAssist(asis);
+
+
+                   Vista.imprimirMensaje("Modificando...");
+                   if(dbm.update(pm) ){
+                       Vista.imprimirMensaje("Modificado con exito");
+                   }else {
+                       Vista.imprimirMensaje("no se ha podido modificar");
+                   }
+
+               }else{
+                   throw new SQLException("No se han encontrado resultados");
+               }
+           }
+       } catch (SQLException e){
+           Vista.imprimirMensaje(e.getMessage());
+       }
     }
 
     public static String buscarYSeleccionarOpcion(String keyword,String tabla,String variable) {
@@ -551,7 +694,7 @@ public class Controlador {
             return null;
         } else {
             Vista.mostrarOpciones(variable,opciones);
-            Vista.imprimirMensaje("Seleccione el número que desea:");
+            Vista.imprimirMensajeSeguido("Seleccione el número que desea:");
             int choice = utilities.introducirNumeroEntero(scan,opciones.size(),1,false);
             if (choice > 0 && choice <= opciones.size()) {
                 String seleccion = opciones.get(choice - 1);
