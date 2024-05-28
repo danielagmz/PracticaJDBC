@@ -18,15 +18,15 @@ public class Menu {
             Vista.imprimirMensaje("------------");
             Vista.imprimirMensaje("--  Menu  --");
             Vista.imprimirMensaje("------------");
-            Vista.imprimirMensaje("1) Llistar tots els jugadors d'un equip");
-            Vista.imprimirMensaje("2) Calcular la mitjana de punts, rebots, assistències d'un jugador");
-            Vista.imprimirMensaje("3) Llistar tots els partits jugats per un equip amb el seu resultat");
-            Vista.imprimirMensaje("4) Inserir un nou jugador a un equip");
-            Vista.imprimirMensaje("5) Traspassar un judador a un altra equip");
-            Vista.imprimirMensaje("6) Actualitzar les dades de jugadors despres del partit");
-            Vista.imprimirMensaje("7) Modificar les estadístiques d’un jugador a un partit");
+            Vista.imprimirMensaje("1) Llistar tots els jugadors d'un equip.");
+            Vista.imprimirMensaje("2) Calcular la mitjana de punts, rebots, assistències d'un jugador.");
+            Vista.imprimirMensaje("3) Llistar tots els partits jugats per un equip amb el seu resultat.");
+            Vista.imprimirMensaje("4) Inserir un nou jugador a un equip.");
+            Vista.imprimirMensaje("5) Traspassar un judador a un altra equip.");
+            Vista.imprimirMensaje("6) Actualitzar les dades de jugadors despres del partit.");
+            Vista.imprimirMensaje("7) Modificar les estadístiques d’un jugador a un partit.");
             Vista.imprimirMensaje("8) Retirar un jugador.");
-            Vista.imprimirMensaje("9) Canviar nom franquícia d’un equip");
+            Vista.imprimirMensaje("9) Canviar nom franquícia d’un equip.");
             Vista.imprimirMensaje("0) acabar");
 
             Vista.imprimirMensajeSeguido("> ");

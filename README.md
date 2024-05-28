@@ -3,6 +3,39 @@
 
 
 ## Ejemplos de funcionamiento
+### Llistar tots els jugadors d'un equip.
+![imagen](src\Assets\Ejemplo 1.png)
+
+### Calcular la mitjana de punts, rebots, assistències d'un jugador.
+![imagen](src\Assets\Ejemplo 2.png)
+
+### Llistar tots els partits jugats per un equip amb el seu resultat.
+![imagen](src\Assets\Ejemplo 3.png)
+
+### Inserir un nou jugador a un equip.
+![imagen](src\Assets\Ejemplo 4.png)
+
+### Si el jugador ja existeix a la base de dades llavors demanem si vol traspassar-lo.
+![imagen](src\Assets\Ejemplo 4.1.png)
+
+### Traspassar un judador a un altra equip.
+![imagen](src\Assets\Ejemplo 5.png)
+
+### Actualitzar les dades de jugadors despres del partit.
+![imagen](src\Assets\Ejemplo 6.png)
+
+### ...
+![imagen](src\Assets\Ejemplo 6.1.png)
+
+### Modificar les estadístiques d’un jugador a un partit.
+![imagen](src\Assets\Ejemplo 7.png)
+
+### Retirar un jugador.
+![imagen](src\Assets\Ejemplo 8.png)
+
+### Canviar nom franquícia d’un equip.
+![imagen](src\Assets\Ejemplo 9.png)
+
 
 
 
@@ -36,6 +69,7 @@ public static void close(PreparedStatement smt)
 ```
 
 ### Menu 🟰
+
 
 La clase menu tiene ```menuPrincipal()``` que se encarga de llamar las funciones en funcion de lo que escoge el usuario
 

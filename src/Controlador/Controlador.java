@@ -354,16 +354,22 @@ public class Controlador {
         int id_equipo;
         Team equipo = new Team();
         DaoTeam dbt = new DaoTeam();
-        Vista.imprimirMensaje("Actualizando franquicia...");
+        String franquiciaNueva = franquicia.substring(0,1).toUpperCase() + franquicia.substring(1).toLowerCase();
         id_equipo = Model.obtenerIdEquipoNomComplet(nombre);
-        equipo.setId(id_equipo);
-        equipo=dbt.read(equipo);
-        equipo.setFranquicia(franquicia);
-        if (dbt.update(equipo)){
-            Vista.imprimirMensaje("Modificado con exito");
-        }else {
-            Vista.imprimirMensaje("No se ha podido modificar");
+        if (id_equipo != -1){
+            Vista.imprimirMensaje("Actualizando franquicia...");
+            equipo.setId(id_equipo);
+            equipo=dbt.read(equipo);
+            equipo.setFranquicia(franquiciaNueva);
+            if (dbt.update(equipo)){
+                Vista.imprimirMensaje("Modificado con exito");
+            }else {
+                Vista.imprimirMensaje("No se ha podido modificar");
+            }
+        } else {
+            Vista.imprimirMensaje("No se ha encontrado la franquicia");
         }
+
     }
 
     /**
@@ -407,28 +413,29 @@ public class Controlador {
                 matchRet.setPuntos_local(Integer.parseInt(partido[2]));
                 matchRet.setId(Integer.parseInt(partido[0]));
                 if (dbm.update(matchRet)){
-                    Vista.imprimirMensaje("Actualizado..");
+
+                    Vista.imprimirMensaje("Partido "+partido[0]+" Actualizado..");
                 }else {
                     Vista.imprimirMensaje("No se ha podido actualizar los datos de este partido");
                 }
 
             }
-            for (String[] jugadore : jugadores) {
-                partidoJugadores.setId_match(Integer.parseInt(jugadore[0]));
-                partidoJugadores.setId_jug(Integer.parseInt(jugadore[1]));
-                partidoJugadores.setPunts(Integer.parseInt(jugadore[2]));
-                partidoJugadores.setRebots(Integer.parseInt(jugadore[3]));
-                partidoJugadores.setAssist(Integer.parseInt(jugadore[4]));
+            for (String[] jugador : jugadores) {
+                partidoJugadores.setId_match(Integer.parseInt(jugador[0]));
+                partidoJugadores.setId_jug(Integer.parseInt(jugador[1]));
+                partidoJugadores.setPunts(Integer.parseInt(jugador[2]));
+                partidoJugadores.setRebots(Integer.parseInt(jugador[3]));
+                partidoJugadores.setAssist(Integer.parseInt(jugador[4]));
                 if (dbp.update(partidoJugadores)){
-                    Vista.imprimirMensaje("Actualizado..");
+                    Vista.imprimirMensaje("Jugador "+Model.obtenerNombreJugador(Integer.parseInt(jugador[1]))+" Actualizado..");
                 }else {
                     Vista.imprimirMensaje("No se ha podido actualizar los datos de este jugador");
                 }
             }
-
             Vista.imprimirMensaje("Se han actualizado los datos");
-
         } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 

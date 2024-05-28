@@ -44,6 +44,7 @@ public class Model {
         return id_equipo;
     }
 
+
     /**
      * funcion que se conecta a la bd y obtiene el id de un jugador a partir de su nombre
      * @param nombre nombre del jugador
@@ -76,6 +77,33 @@ public class Model {
         }
         // retorna menos uno si no se encuentran registros
         return id_jug;
+    }
+
+    public static String obtenerNombreJugador(int id_jugador) throws SQLException {
+        String nom = "";
+
+        Connection con = null;
+        PreparedStatement smt = null;
+        try {
+            con = Conexion.connection();
+            if (con != null) {
+                smt = con.prepareStatement("SELECT nom FROM players WHERE id=?");
+                smt.setInt(1, id_jugador);
+                ResultSet resultado = smt.executeQuery();
+                if (resultado.next()) {
+                    nom = resultado.getString(1);
+                }
+            } else {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Ha ocurrido un error al buscar este jugador");
+        } finally {
+            Conexion.close(con);
+            Conexion.close(smt);
+        }
+        // retorna menos uno si no se encuentran registros
+        return nom;
     }
 
     /**
@@ -112,7 +140,7 @@ public class Model {
     public static int obtenerIdEquipoNomComplet(String nombre){
         Connection con = null;
         PreparedStatement smt = null;
-        int id = 0;
+        int id = -1;
         try {
             con = Conexion.connection();
             if (con != null){
