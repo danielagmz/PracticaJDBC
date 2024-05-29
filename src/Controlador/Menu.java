@@ -59,7 +59,7 @@ public class Menu {
                     Controlador.retirarJugador();
                     break;
                 case 9:
-                    Controlador.introducirFranquicia();
+                    Controlador.cambiarFranquicia();
                     break;
                 case 0:
                     System.exit(1);
