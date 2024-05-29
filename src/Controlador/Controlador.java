@@ -300,7 +300,6 @@ public class Controlador {
                     switch (Menu.confirmMenu("És aquest el jugador?",opt)){
                         case 1:
                             Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                            // todo verificar el nombre
                             equipN=scan.nextLine();
                             Vista.imprimirMensaje("Buscando equipo...");
                             equipo_nuevo= Model.obtenerIdEquipo(equipN);
@@ -333,7 +332,6 @@ public class Controlador {
                 switch (Menu.confirmMenu("És aquest el jugador?", opt)) {
                     case 1:
                         Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                        // todo verificar el nombre
                         equipN = scan.nextLine();
                         Vista.imprimirMensaje("Buscando equipo...");
                         equipo_nuevo = Model.obtenerIdEquipo(equipN);
@@ -485,8 +483,6 @@ public class Controlador {
 
     /**
      * Funcion para cambiar la franquicia a partir de la funcion de IntroducirFranquicia
-     * @param nombre La franquicia que el usuario quiere cambiar
-     * @param franquicia La nueva franquicia
      */
     public static void cambiarFranquicia() throws SQLException {
         int id_equipo;

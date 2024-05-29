@@ -128,7 +128,6 @@ public class DaoPlayer implements DAODB<Player>{
 
 // metodo especifico para guardar en una array los stats de un jugador concreto
     public List<Players_stats> medianasJugadores(String nom){
-        //todo esto deberia de imprimir un solo player no una lista
         List<Players_stats> jugadores = new ArrayList<>();
         Connection con = null;
         PreparedStatement smt = null;
