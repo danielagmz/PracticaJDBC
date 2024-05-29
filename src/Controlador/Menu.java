@@ -83,7 +83,7 @@ public class Menu {
         // utiliza funciones de "libreriaCustom" para mostrar y formatear el menu
             utilities.menu(texto, opciones);
             Vista.imprimirMensajeSeguido("> ");
-            opcio = utilities.introducirNumeroEntero(scan, opciones.length,0,false);
+            opcio = utilities.introducirNumeroEntero(scan, opciones.length,1,false);
 
 
         return opcio;

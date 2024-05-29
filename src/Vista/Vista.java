@@ -149,10 +149,30 @@ public class Vista {
 
     }
     public static void mostrarOpcionesFranquicia(List<String> franquicias) {
+        int maxL = 24;
+        int i;
+
         System.out.println("Franquicias encontradas:");
-        for (int i = 0; i < franquicias.size(); i++) {
+
+        for(i = 1; i < franquicias.size(); ++i) {
+            maxL = Math.max(franquicias.get(i).length(), maxL);
+        }
+
+        for(i = 0; i < maxL; ++i) {
+            System.out.print('-');
+        }
+
+        System.out.println();
+
+        for (i = 0; i < franquicias.size(); i++) {
             System.out.println((i + 1) + ". " + franquicias.get(i));
         }
+
+        for(i = 0; i < maxL; ++i) {
+            System.out.print('-');
+        }
+        System.out.println();
+
     }
 
 }

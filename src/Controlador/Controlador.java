@@ -168,7 +168,12 @@ public class Controlador {
      */
 
     private static boolean verificarNombre(String nom){
-        return nom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑčČ\\s-.]+$");
+        boolean correcto= nom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑčČ\\s-.]+$");
+
+        if (nom.isEmpty() || nom.isBlank()){
+            correcto=false;
+        }
+        return correcto;
     }
 
     /**
@@ -186,6 +191,7 @@ public class Controlador {
 
         System.out.print("Nombre del jugador: ");
         nom = scan.nextLine();
+
 
 // si el nombre es un texto, y no esta en la base de datos (la select da -1),
 //  se agrega al objeto player el nombre. Si no (la select no da -1), este jugador ya existe y se llama a traspasar
@@ -265,6 +271,7 @@ public class Controlador {
         String equipN;
         Player player = new Player();
         int equipo_nuevo;
+        String opcio;
         DaoPlayer db = new DaoPlayer();
         String[] opt={"1- Si ✅","2- No ❌","3- Sortir 🏃‍♂️"};
 
@@ -295,18 +302,34 @@ public class Controlador {
                 Vista.imprimirMensaje ("Buscando similitudes...");
                 String opcion = buscarYSeleccionarOpcion(nom,"players","jugadores");
                 if (opcion != null){
+
                     Vista.imprimirMensaje("Recuperando datos del jugador...");
                     player.setId(Model.obtenerIdJugador(opcion));
                     player=db.read(player);
+
                     Vista.mostrarGenerico(player,true);
                     Vista.saltoLinea();
+
                     switch (Menu.confirmMenu("És aquest el jugador?",opt)){
                         case 1:
-                            Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                            equipN=scan.nextLine();
-                            Vista.imprimirMensaje("Buscando equipo...");
-                            equipo_nuevo= Model.obtenerIdEquipo(equipN);
-                            Vista.imprimirMensaje("traspasando jugador ...");
+                            do{
+                                Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
+                                equipN=scan.nextLine();
+
+                                Vista.imprimirMensaje("Buscando equipo...");
+                                equipo_nuevo= Model.obtenerIdEquipo(equipN);
+                                if (equipo_nuevo==-1){
+                                   Vista.imprimirMensaje("No se han encontrado coincidencias exactas");
+                                    Vista.imprimirMensaje("Buscando similitudes...");
+                                   opcio= buscarYSeleccionarOpcion(equipN,"teams","equipos");
+                                   equipo_nuevo=Model.obtenerIdEquipo(opcio);
+                                   if (equipo_nuevo==-1){
+                                       Vista.imprimirMensaje("Este equipo no existe");
+                                   }
+                                }
+                            } while (equipo_nuevo==-1);
+
+                            Vista.imprimirMensaje("Traspasando jugador...");
                             player.setEquip_actual(equipo_nuevo);
                             // si se ha podido modificar se avisa al usuario
                             if(db.update(player)){
@@ -334,12 +357,28 @@ public class Controlador {
                 // 1 proceso de traspaso, 2 introducir de vuelta un nuevo jugador y 3 salir
                 switch (Menu.confirmMenu("És aquest el jugador?", opt)) {
                     case 1:
-                        Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                        equipN = scan.nextLine();
-                        Vista.imprimirMensaje("Buscando equipo...");
-                        equipo_nuevo = Model.obtenerIdEquipo(equipN);
-                        Vista.imprimirMensaje("traspasando jugador ...");
+                        do {
+                            Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
+                            equipN = scan.nextLine();
+
+                            Vista.imprimirMensaje("Buscando equipo...");
+                            equipo_nuevo = Model.obtenerIdEquipo(equipN);
+
+                            if (equipo_nuevo==-1){
+                                Vista.imprimirMensaje("No se han encontrado coincidencias exactas");
+                                Vista.imprimirMensaje("Buscando similitudes...");
+                                opcio= buscarYSeleccionarOpcion(equipN,"teams","equipos");
+                                equipo_nuevo=Model.obtenerIdEquipo(opcio);
+                                if (equipo_nuevo==-1){
+                                    Vista.imprimirMensaje("Este equipo no existe");
+                                    Vista.saltoLinea();
+                                }
+                            }
+                        } while (equipo_nuevo==-1);
+                        Vista.saltoLinea();
+                        Vista.imprimirMensaje("Traspasando jugador...");
                         player.setEquip_actual(equipo_nuevo);
+
                         // si se ha podido modificar se avisa al usuario
                         if (db.update(player)) {
                             Vista.imprimirMensaje("Traspasado correctamente");
