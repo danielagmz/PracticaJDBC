@@ -28,7 +28,7 @@ este tiene todo lo necesario para que la aplicacion funcione:
 
 ## Ejemplos de funcionamiento
 ### Llistar tots els jugadors d'un equip.
-![imagen](Assets\Ejemplo1.png)
+![imagen](Assets/Ejemplo1.png)
 
 ### Calcular la mitjana de punts, rebots, assistències d'un jugador.
 ![imagen](Assets/Ejemplo2.png)
