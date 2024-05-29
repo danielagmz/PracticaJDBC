@@ -7,6 +7,7 @@ import megaLibreria.utilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +226,6 @@ public class Controlador {
                 switch (Menu.confirmMenu("És aquest el jugador?",opt)){
                     case 1:
                         Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                        // todo verificar el nombre
                         equipN=scan.nextLine();
                         Vista.imprimirMensaje("Buscando equipo...");
                         equipo_nuevo= Model.obtenerIdEquipo(equipN);
