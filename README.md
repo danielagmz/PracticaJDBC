@@ -9,6 +9,8 @@ DriverManager.getConnection("jdbc:mysql://<IP>:<PUERTO>/nba","<USUARIO>","<CONTR
 ```
 El jar se encuentra en out/artifacts/Practica6_JDBC_jar/[Practica6-JDBC.jar](out%2Fartifacts%2FPractica6_JDBC_jar%2FPractica6-JDBC.jar)
 
+Los ficheros para que el apartado 6 funcione, a partir de la ejecusion del .jar en otra ruta, estan en la carpeta Ficheros de este proyecto, simplemente hay que añadirlos a la carpeta Ficheros que se puede crear a mano o ejecutando el apartado 6 y luego moviendo dichos archivos dentro.
+
 `WARNING ⚠️`
 
 Si el proyecto no compila y pone que no se encuentran las clases, se soluciona con un rebuild project
@@ -195,7 +197,7 @@ Este metodo pregunta por un jugador y muestra un menu con todos los partidos en 
 
 El usuario puede **seleccionar el partido que quiere modificar**  y cambiar[^1] los valores de puntos, rebotes y asistencias del jugador en ese partido.
 
-`Nota:`
+`Nota en el pie de pagina`
 
 [^1]: modificar los valores en este paso, modifica tambien las medias del jugador (el apartado 2);
 Esto debido a un trigger de la BD.
