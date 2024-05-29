@@ -9,6 +9,7 @@ La ruta de conexion a la base de datos se puede cambiar en la clase conexion a l
 ```java
 DriverManager.getConnection("jdbc:mysql://<IP>:<PUERTO>/nba","<USUARIO>","<CONTRASEÑA>");
 ```
+
 ### BD 🔤
 
 La base de datos se puede generar ejecutando integramente el [script base de datos nba.sql](src%2FDataBase%2Fscript%20base%20de%20datos%20nba.sql),
