@@ -1,8 +1,6 @@
 # NBA - JDBC
-
+[link repositorio de github](https://github.com/danielagmz/PracticaJDBC?tab=readme-ov-file#user-content-fnref-1-6a87abf9b33664f7246a086dd9a861a2)
 ## Consideraciones previas
-
-
 
 La ruta de conexion a la base de datos se puede cambiar en la clase conexion a la ip del servidor que se tenga y el usuario que se tenga
 
