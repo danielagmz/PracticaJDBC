@@ -1,7 +1,6 @@
 ### IntelliJ IDEA ###
 
-./out/production/
-
+/out/production/
 eliminarYresetIndex.sql
 ### Eclipse ###
 .apt_generated

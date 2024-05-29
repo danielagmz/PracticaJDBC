@@ -4,6 +4,7 @@ package Vista;
 import Model.Player;
 import Model.PlayerMatches;
 import Model.Players_stats;
+import megaLibreria.utilities;
 
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class Vista {
        for (Player player : lista) {
            System.out.printf("%-30s%-8d%-8d\n",player.getNom(),player.getAlcada(),player.getPes());
        }
+       System.out.println();
    }
 
     /**
@@ -114,4 +116,47 @@ public class Vista {
    public static void saltoLinea(){
        System.out.println();
    }
+
+    /**
+     * Funcion para imprimir las opciones de equipo o jugadores
+     * @param variable Parametro para indicar de si son jugadores o equipos
+     * @param jugEqup Le pasamos el ArrayList de los jugadores o equipos
+     */
+    public static void mostrarOpciones(String variable,List<String> jugEqup) {
+        int maxL = 20;
+        int i;
+        variable= variable.substring(0,1).toUpperCase() + variable.substring(1).toLowerCase();
+
+        System.out.println(variable + " encontrados:");
+
+        for(i = 1; i < jugEqup.size(); ++i) {
+            maxL = Math.max(jugEqup.get(i).length(), maxL);
+        }
+
+        for(i = 0; i < maxL; ++i) {
+            System.out.print('-');
+        }
+
+        System.out.println();
+        for (i = 0; i < jugEqup.size(); i++) {
+            System.out.println((i + 1) + ". " + jugEqup.get(i));
+        }
+
+        for(i = 0; i < maxL; ++i) {
+            System.out.print('-');
+        }
+        System.out.println();
+
+    }
+    public static void mostrarOpcionesFranquicia(List<String> franquicias) {
+        System.out.println("Franquicias encontradas:");
+        for (int i = 0; i < franquicias.size(); i++) {
+            System.out.println((i + 1) + ". " + franquicias.get(i));
+        }
+    }
+
 }
+
+
+
+

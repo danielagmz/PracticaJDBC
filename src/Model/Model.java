@@ -233,6 +233,60 @@ public class Model {
         return partidos;
     }
 
+    /**
+     * Funcion para buscar la palabra clave que el usuario a introducido en la base de datos
+     * @param pal_clave Palabra que servira para hacer la busqueda generica en la base de datos
+     * @param tabla Tabla donde la funcion hará la select
+     * @return Retorna un ArrayList con todos los equipos o jugadores que tengan similitud con pal_clave
+     */
+    public static List<String> buscadorBD(String pal_clave , String tabla) {
+        List<String> selecciones = new ArrayList<>();
+        String sql = "SELECT nom FROM "+ tabla +" WHERE nom LIKE ?";
+        Connection con;
+        PreparedStatement smt;
+
+        try {
+            con = Conexion.connection();
+            if (con!=null) {
+                smt = con.prepareStatement(sql);
+                smt.setString(1, "%" + pal_clave + "%");
+                ResultSet rs = smt.executeQuery();
+                while (rs.next()) {
+                    selecciones.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException e) {
+            Vista.imprimirMensaje(e.getMessage());
+        }
+        return selecciones;
+    }
+
+    /**
+     * Funcion para buscar similitudes con la franqucia que ha insertado el usuario dentro de la base de datos
+     * @param pal_clave Palabra que servira para hacer la busqueda generica en la base de datos
+     * @return Retorna un ArrayList con todas las franquicias que tengan similitud con pal_clave
+     */
+    public static List<String> buscadorFranquiciaBD(String pal_clave) {
+        List<String> selecciones = new ArrayList<>();
+        String sql = "SELECT nom_complet FROM teams WHERE nom_complet LIKE ?";
+        Connection con;
+        PreparedStatement smt;
+
+        try{
+            con = Conexion.connection();
+            if (con!=null) {
+                smt = con.prepareStatement(sql);
+                smt.setString(1, "%" + pal_clave + "%");
+                ResultSet rs = smt.executeQuery();
+                while (rs.next()) {
+                    selecciones.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException e) {
+            Vista.imprimirMensaje(e.getMessage());
+        }
+        return selecciones;
+    }
 }
 
 
