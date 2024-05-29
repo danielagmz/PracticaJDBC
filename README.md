@@ -31,34 +31,34 @@ este tiene todo lo necesario para que la aplicacion funcione:
 ![imagen](Assets\Ejemplo1.png)
 
 ### Calcular la mitjana de punts, rebots, assistències d'un jugador.
-![imagen](Assets\Ejemplo2.png)
+![imagen](Assets/Ejemplo2.png)
 
 ### Llistar tots els partits jugats per un equip amb el seu resultat.
-![imagen](Assets\Ejemplo3.png)
+![imagen](Assets/Ejemplo3.png)
 
 ### Inserir un nou jugador a un equip.
-![imagen](Assets\Ejemplo4.png)
+![imagen](Assets/Ejemplo4.png)
 
 ### Si el jugador ja existeix a la base de dades llavors demanem si vol traspassar-lo.
-![imagen](Assets\Ejemplo4.1.png)
+![imagen](Assets/Ejemplo4.1.png)
 
 ### Traspassar un judador a un altra equip.
-![imagen](Assets\Ejemplo5.png)
+![imagen](Assets/Ejemplo5.png)
 
 ### Actualitzar les dades de jugadors despres del partit.
-![imagen](Assets\Ejemplo6.png)
+![imagen](Assets/Ejemplo6.png)
 
 ### ...
-![imagen](Assets\Ejemplo6.1.png)
+![imagen](Assets/Ejemplo6.1.png)
 
 ### Modificar les estadístiques d’un jugador a un partit.
-![imagen](Assets\Ejemplo7.png)
+![imagen](Assets/Ejemplo7.png)
 
 ### Retirar un jugador.
-![imagen](Assets\Ejemplo8.png)
+![imagen](Assets/Ejemplo8.png)
 
 ### Canviar nom franquícia d’un equip.
-![imagen](Assets\Ejemplo9.png)
+![imagen](Assets/Ejemplo9.png)
 
 ## Descripción
 
