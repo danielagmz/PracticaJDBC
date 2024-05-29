@@ -41,6 +41,10 @@ public class Vista {
    }
     public static void imprimirPlayerResult(List<String> partidos, List<PlayerMatches> lista) {
         System.out.printf("%-5s%-20s%-10s%-10s%-10s\n","","partido","Puntos","Rebotes","Asistencies");
+        for (int i = 0; i < 56; i++) {
+            System.out.print("-");
+        }
+        System.out.println();
         for (int i = 0; i < partidos.size(); i++) {
             String partido = partidos.get(i);
             PlayerMatches player = lista.get(i);

@@ -217,35 +217,42 @@ public class Controlador {
             // busca el jugador en la base de datos y crea un objeto con sus atributos
             player.setId(Model.obtenerIdJugador(nom));
             player=db.read(player);
-            Vista.mostrarGenerico(player,true);
-            Vista.saltoLinea();
-            // menu para confirmar que se traspasa el jugador correcto
-            // 1 proceso de traspaso, 2 introducir de vuelta un nuevo jugador y 3 salir
-            switch (Menu.confirmMenu("És aquest el jugador?",opt)){
-                case 1:
-                    Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
-                    // todo verificar el nombre
-                    equipN=scan.nextLine();
-                    Vista.imprimirMensaje("Buscando equipo...");
-                    equipo_nuevo= Model.obtenerIdEquipo(equipN);
-                    Vista.imprimirMensaje("traspasando jugador ...");
-                    player.setEquip_actual(equipo_nuevo);
-                    // si se ha podido modificar se avisa al usuario
-                    if(db.update(player)){
-                        Vista.imprimirMensaje("Traspasado correctamente");
-                    }else {
-                        Vista.imprimirMensaje("Ha habido un error en el traspaso");
-                    }
-                    break;
-                case 2:
-                    traspas(false);
-                    break;
+            if (player!=null){
+                Vista.mostrarGenerico(player,true);
+                Vista.saltoLinea();
+                // menu para confirmar que se traspasa el jugador correcto
+                // 1 proceso de traspaso, 2 introducir de vuelta un nuevo jugador y 3 salir
+                switch (Menu.confirmMenu("És aquest el jugador?",opt)){
+                    case 1:
+                        Vista.imprimirMensajeSeguido("Introdueix el nou equip: ");
+                        // todo verificar el nombre
+                        equipN=scan.nextLine();
+                        Vista.imprimirMensaje("Buscando equipo...");
+                        equipo_nuevo= Model.obtenerIdEquipo(equipN);
+                        Vista.imprimirMensaje("traspasando jugador ...");
+                        player.setEquip_actual(equipo_nuevo);
+                        // si se ha podido modificar se avisa al usuario
+                        if(db.update(player)){
+                            Vista.imprimirMensaje("Traspasado correctamente");
+                        }else {
+                            Vista.imprimirMensaje("Ha habido un error en el traspaso");
+                        }
+                        break;
+                    case 2:
+                        traspas(false);
+                        break;
 
-                default:
-                    Menu.menuPrincipal();
+                    default:
+                        Menu.menuPrincipal();
+                }
+            }else{
+                Vista.imprimirMensaje("Este jugador no existe");
+                Menu.menuPrincipal();
             }
+
         } else {
-            throw new IllegalArgumentException("El nombre no es correcto");
+            Vista.imprimirMensaje("El nombre no es correcto");
+            Menu.menuPrincipal();
         }
     }
 
@@ -279,14 +286,16 @@ public class Controlador {
             playerRet=dbp.read(playerRet);  // datos basicos del jugador nombre,peso,altura
             ps=dbs.read(ps);        // stats del jugador
 
-            Vista.mostrarGenerico(playerRet,true);
-            Vista.saltoLinea();
-            // corfimacion de que el jugador es correcto
-            // 1 proceso de retirar, 2 vuelta a preguntar un jugador y 3 o cualquier numero mas menu principal
-            switch (Menu.confirmMenu("es este el jugador que quieres retirar?",opt)){
-                case 1:
-                    // solo se hace el proceso si hay un jugador que retirar
-                    if (ps != null && playerRet!=null){
+
+            if (ps!=null && playerRet!= null) {
+                Vista.mostrarGenerico(playerRet,true);
+                Vista.saltoLinea();
+                // corfimacion de que el jugador es correcto
+                // 1 proceso de retirar, 2 vuelta a preguntar un jugador y 3 o cualquier numero mas menu principal
+                switch (Menu.confirmMenu("es este el jugador que quieres retirar?",opt)){
+                    case 1:
+                        // solo se hace el proceso si hay un jugador que retirar
+
                         Vista.imprimirMensaje("Retirando jugador...");
                         //Acceder a los datos de player stats, obtener el id, los stats y el nombre del ultimo equipo de players
                         nom_equip=Model.obtenerNombreEquipo(playerRet.getEquip_actual());
@@ -298,22 +307,23 @@ public class Controlador {
                             dbs.delete(ps);
                             dbp.delete(playerRet);
                             Vista.imprimirMensaje("Jugador retirado con exito!");
+                            Menu.menuPrincipal();
                         }
-                    }else{
-                        // si por cualquier otra cosa hubiese algun otro problema para encontrar el jugador, ser le vuelve a preguntar
-                        Vista.imprimirMensaje("Ha habido un problema al recuperar los datos de este jugador");
-                        Vista.imprimirMensaje("Intentalo de nuevo");
 
+                    case 2:
                         retirarJugador();
-                    }
-                case 2:
-                    retirarJugador();
 
-                default:
-                    Menu.menuPrincipal();
+                    default:
+                        Menu.menuPrincipal();
+                }
+            } else{
+                // si hubiese un problema para encontrar el jugador, ser le vuelve a preguntar
+                Vista.imprimirMensaje("Este jugador no existe");
             }
 
 
+        }else{
+            Vista.imprimirMensaje("El nombre no es correcto");
         }
 
     }
@@ -434,9 +444,9 @@ public class Controlador {
             }
             Vista.imprimirMensaje("Se han actualizado los datos");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            Vista.imprimirMensaje("Ha habido un problema con la lectura de los archivos");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            Vista.imprimirMensaje("No se ha podido establecer la conexion");
         }
 
     }
@@ -474,6 +484,7 @@ public class Controlador {
 
             if (!partidosResult.isEmpty() && !partidos.isEmpty()){
                 Vista.imprimirPlayerResult(partidos,partidosResult);
+                Vista.saltoLinea();
                 Vista.imprimirMensajeSeguido("Que partido quieres modificar: ");
                 partido = utilities.introducirNumeroEntero(scan,partidosResult.size(),1,false);
 
@@ -502,10 +513,12 @@ public class Controlador {
                     }
 
             }else{
-                throw new SQLException("No se han encontrado resultados");
+               Vista.imprimirMensaje("No se han encontrado resultados");
+               Menu.menuPrincipal();
             }
         } else {
-            throw new SQLException("Este jugador no existe");
+            Vista.imprimirMensaje("Este jugador no existe");
+            Menu.menuPrincipal();
         }
     }
 
