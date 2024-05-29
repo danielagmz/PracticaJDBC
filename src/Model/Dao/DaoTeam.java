@@ -70,9 +70,10 @@ public class DaoTeam implements DAODB<Team> {
         try {
             con = Conexion.connection();
             if (con != null){
-                smt = con.prepareStatement("UPDATE teams SET nom=? WHERE id=?");
+                smt = con.prepareStatement("UPDATE teams SET nom=?,franquicia=? WHERE id=?");
                 smt.setString(1,team.getNombre());
-                smt.setInt(2,team.getId());
+                smt.setString(2,team.getFranquicia());
+                smt.setInt(3,team.getId());
 
                 int rows = smt.executeUpdate();
                 return  rows > 0;

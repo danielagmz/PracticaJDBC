@@ -661,7 +661,7 @@ See also com.mysql.cj.conf.PropertyDefinitions.SYSP_* variables for other test o
     </target>
 
 
-    <!-- Copy GPL LICENSE & README files. -->
+    <!-- Copy GPL LICENSE & README.md files. -->
     <target name="-copy-notices-gpl" unless="${com.mysql.cj.build.commercial}">
         <get src="${com.mysql.cj.dist.licenseUrl}" dest="${com.mysql.cj.build.dir.driver}/LICENSE" verbose="true" />
         <fixcrlf file="${com.mysql.cj.build.dir.driver}/LICENSE" tab="remove" tablength="8" eol="lf" />
@@ -670,7 +670,7 @@ See also com.mysql.cj.conf.PropertyDefinitions.SYSP_* variables for other test o
     </target>
 
 
-    <!-- Copy Commercial LICENSE & README files. -->
+    <!-- Copy Commercial LICENSE & README.md files. -->
     <target name="-copy-notices-commercial" if="${com.mysql.cj.build.commercial}">
         <fail message="Commercial license book URL required. Set the URL from where to fetch the license book with the property 'com.mysql.cj.dist.licenseUrl'.">
             <condition>

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DaoPlayer implements DAODB<Player>{
+    // instrucciones crud para la tabla de players
     @Override
     public boolean create(Player player) {
         Connection con = null;
@@ -126,7 +127,7 @@ public class DaoPlayer implements DAODB<Player>{
         return false;
     }
 
-
+// metodo especifico para guardar en una array los stats de un jugador concreto
     public List<Players_stats> MedianasJugadores(String nom){
         //todo esto deberia de imprimir un solo player no una lista
         List<Players_stats> jugadores = new ArrayList<>();
@@ -190,7 +191,7 @@ public class DaoPlayer implements DAODB<Player>{
                         jugadores.add(p);
                     }
                 } else {
-                   throw new SQLException ("Ha ocurrido un error al buscar los jugadores de ese equipo");
+                   throw new SQLException ("Ha ocurrido un error");
                 }
                 return jugadores;
             } else {
@@ -205,47 +206,5 @@ public class DaoPlayer implements DAODB<Player>{
         return null;
     }
 
-
-    public boolean ComprobarExistencia(String nom){
-        Connection con = null;
-        PreparedStatement smt = null;
-        try {
-            con = Conexion.connection();
-            if (con != null){
-                smt = con.prepareStatement("SELECT * FROM players WHERE nom=?");
-                smt.setString(1,nom);
-                ResultSet id_jugador = smt.executeQuery();
-                if (id_jugador != null){
-                    if (id_jugador.next()){
-                        smt = con.prepareStatement("SELECT * FROM player_stats WHERE id_jugador=?");
-                        smt.setInt(1,id_jugador.getInt(1));
-                        ResultSet jugadors_media = smt.executeQuery();
-                        while (jugadors_media.next()){
-                            Players_stats p = new Players_stats();
-                            p.setAvg_puntos(jugadors_media.getFloat(2));
-                            p.setAvg_rebotes(jugadors_media.getFloat(3));
-                            p.setAvg_asistencias(jugadors_media.getFloat(4));
-
-                        }
-                    } else {
-                        Vista.imprimirMensaje("Ha ocurrido un error al buscar las medianas del jugador");
-                    }
-                } else {
-                    Controlador.InsertarJugador();
-                    Vista.imprimirMensaje("Creando Jugador...");
-
-                }
-                return true;
-            } else {
-                throw new SQLException("No se ha podido establecer la conexion");
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-        } finally {
-            Conexion.close(con);
-            Conexion.close(smt);
-        }
-       return false;
-    }
     
 }

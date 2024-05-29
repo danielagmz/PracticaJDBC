@@ -1,7 +1,6 @@
 ### IntelliJ IDEA ###
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+
+./out/production/
 
 eliminarYresetIndex.sql
 ### Eclipse ###

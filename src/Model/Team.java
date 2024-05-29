@@ -4,6 +4,16 @@ public class Team {
     private int id;
     private String nombre;
 
+    private String franquicia;
+
+    public String getFranquicia() {
+        return franquicia;
+    }
+
+    public void setFranquicia(String franquicia) {
+        this.franquicia = franquicia;
+    }
+
     public Team(String nombre) {
         this.nombre = nombre;
     }

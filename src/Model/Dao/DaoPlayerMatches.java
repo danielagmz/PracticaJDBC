@@ -1,7 +1,6 @@
 package Model.Dao;
 
 import Controlador.Conexion;
-import Model.Player;
 import Model.PlayerMatches;
 
 import java.sql.Connection;
@@ -56,7 +55,7 @@ public class DaoPlayerMatches implements DAODB<PlayerMatches>{
         try {
             con = Conexion.connection();
             if (con != null){
-                smt = con.prepareStatement("UPDATE players_matches SET punts=?,rebots=?,assist=? WHERE id_match=? AND id_jugador=?");
+                smt = con.prepareStatement("UPDATE players_matches SET punts=?,rebots=?,assistencies=? WHERE id_match=? AND id_jugador=?");
                 smt.setInt(1,pm.getPunts());
                 smt.setInt(2,pm.getRebots());
                 smt.setInt(3,pm.getAssist());
