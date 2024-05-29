@@ -2,13 +2,19 @@
 
 ## Consideraciones previas
 
-### conexion
+
 
 La ruta de conexion a la base de datos se puede cambiar en la clase conexion a la ip del servidor que se tenga y el usuario que se tenga
 
 ```java
 DriverManager.getConnection("jdbc:mysql://<IP>:<PUERTO>/nba","<USUARIO>","<CONTRASEÑA>");
 ```
+El jar se encuentra en out/artifacts/Practica6_JDBC_jar/[Practica6-JDBC.jar](out%2Fartifacts%2FPractica6_JDBC_jar%2FPractica6-JDBC.jar)
+
+`WARNING ⚠️`
+
+Si el proyecto no compila y pone que no se encuentran las clases, se soluciona con un rebuild project
+
 
 ### BD 🔤
 
